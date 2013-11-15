@@ -1,0 +1,21 @@
+body{
+background-color:#FFF;
+}
+#header {
+	background-color:#222;
+	color:white;
+}
+#branding h1 {
+	color:white;
+}
+#header a:link, #header a:visited {
+	color:#ccc !important;
+}
+#header a:hover {
+	color:#fff !important;
+	text-decoration: none;
+}
+
+.module h2, .module caption, .inline-group h2 {
+	background:#222;
+}

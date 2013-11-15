@@ -1,0 +1,19 @@
+body, h1, h2,h3,h4,p{
+	font-family:'Open Sans', sans-serif !important;
+}
+
+h1,h2,h3,h4 {
+	font-weight: bold;
+}
+
+#footer {
+height: 100px;
+}
+
+#wrap{
+min-height: 100%;
+height: auto !important;
+height: 100%;
+margin: 0 auto -100px;
+}
+

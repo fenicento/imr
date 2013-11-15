@@ -1,0 +1,22 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title }} | Ignis Mutat Res - backend{% endblock %}
+
+
+
+{% block branding %}
+{% load staticfiles %}
+
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/style.css" %}" />
+<h1 id="site-name">Ignis Mutat Res - Administrator page</h1>
+{% endblock %}
+
+{% block nav-global %}
+    {% if user.is_staff %}
+    
+
+    <a href="/" clas="ml" style="margin:10px; display:block;">Website home</a>  
+    
+    {% endif %}
+{% endblock %}

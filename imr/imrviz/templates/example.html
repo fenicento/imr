@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}<h1 class="center"><b>REFORME</b> / THE GLOBAL ENERGY SIMULATOR</h1>{% endblock %}
+
+{% block content %}
+	
+	<br/>
+	  <div id="vis">
+	  <div id="choose-year-container">
+		  <label>Choose the year</label>
+		  <div id ="choose-year" class="btn-group" data-toggle="buttons-radio">
+		    <button type="radio" name="tog" value="1750" class="btn btn-sm btn-year">1750</button>
+		    <button type="radio" name="tog" value="1850" class="btn btn-sm btn-year">1850</button>
+		    <button type="radio" name="tog" value="1950" class="btn btn-sm btn-year">1950</button>
+		    <button type="radio" name="tog" value="2000" class="btn btn-sm btn-year active">2000</button>
+		    <button type="radio" name="tog" value="2050" class="btn btn-sm btn-year">2050</button>
+		  </div>
+			<button type="button" class="btn btn-sm btn-time" data-toggle="button"><span class="glyphicon glyphicon-play"></span>
+		</div>
+		
+		<button type="button" value="expand" class="btn pull-right btn-sm btn-expand">Expand all</button>
+		
+	</div>
+		  
+		
+		
+	  </div>
+
+	{% load staticfiles %}
+	 <script src="{% static "imr/js/jquery.js" %}"></script>
+    <script src="{% static "imr/js/jquery-ui-1.8.24.custom.min.js" %}"></script>
+    <script src="{% static "imr/js/d3.v2.min.js" %}"></script>
+    <script src="{% static "imr/js/ignis.js" %}"></script>
+
+    {% endblock %}

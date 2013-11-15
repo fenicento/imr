@@ -1,0 +1,71 @@
+{% extends 'bootstrap.html' %}
+
+{% load bootstrap3 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+
+
+{% block bootstrap3_content %}
+{% load staticfiles %}
+<div id="wrap">
+
+<link rel="stylesheet" type="text/css" href="{% static "imr/css/style.css" %}" />
+
+<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <div class="container">
+      <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About Ignis Mutat Res</a></li>
+      <li><a href="/team">About the Reforme Team</a></li>
+      <li><a href="/docs">Documents &amp; References</a></li>
+      <li><a href="/admin">Database</a></li>
+    </ul>
+  </div>
+</div>
+    </nav>
+
+
+    <div class="container">
+
+    
+    
+        {% block title %}(no title){% endblock %}
+
+      
+
+        {% block content %}(no content){% endblock %}
+    </div>
+
+    {% bootstrap_javascript jquery=True %}
+
+<div id="push"></div>
+{% block footer %}
+</div>
+<div id="footer">
+  <div class="container">
+    <div id="logos">
+    <a href="http://www.culturecommunication.gouv.fr/"><img src="{% static "imr/img/THU_cultcomm.jpg" %}"/></a>
+    <a href="http://www.developpement-durable.gouv.fr/"><img src="{% static "imr/img/THU_mineco.jpg" %}"/></a>
+    <a href="http://www.ateliergrandparis.fr/"><img src="{% static "imr/img/THU_aidgp.gif" %}"/></a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% endblock %}
+
+

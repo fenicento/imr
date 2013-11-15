@@ -13,12 +13,22 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
-import os
 
-# We defer to a DJANGO_SETTINGS_MODULE already in the environment. This breaks
-# if running multiple sites in the same mod_wsgi process. To fix this, use
-# mod_wsgi daemon mode with each site in its own daemon process, or use
-# os.environ["DJANGO_SETTINGS_MODULE"] = "imr.settings"
+import os, sys, site
+
+root_dir = "/var/www/imr.densitydesign.org/imr_env"
+packages_dir = os.path.join(root_dir, "lib/python2.6/site-packages")
+ 
+
+site.addsitedir(packages_dir)
+
+sys.path.append(root_dir)
+sys.path.insert(0,packages_dir)
+
+sys.path.append("/var/www/imr.densitydesign.org/imr")
+sys.path.append("/var/www/imr.densitydesign.org/imr/imr")
+
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "imr.settings")
 
 # This application object is used by any WSGI server configured to use this
@@ -30,3 +40,4 @@ application = get_wsgi_application()
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+

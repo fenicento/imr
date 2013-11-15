@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+
+{% block title %}<h1 class="center"><b>REFORME</b> / THE GLOBAL ENERGY SIMULATOR</h1>{% endblock %}
+
+{% block content %}
+
+{% load staticfiles %}
+<div class="row choices">
+
+
+	<div class="col-md-6 choice">
+		<h3><a href="/viz/example">See an example</a></h3>
+		<p>Discover the tool by watching a full scenario featuring the energy exchange and consumption from the entire earth to Parc Des Ponts, Paris. The time span ranges from 1750 to 2050.</p> 
+	</div>
+
+	
+
+	<div class="col-md-6 choice">
+		<h3>Submit your own data</h3>
+		<p>Build your own visualization by submitting data related to a custom space, or load a file of a previously inserted scenario. </p>
+	</div>
+
+	
+
+</div>
+<div class="row">
+
+
+
+	<div class="col-md-6 choice">
+	<a href="/viz/example"><img src="{% static "imr/img/tool_example.png" %}"/></a>
+	</div>
+
+	
+	<div class="col-md-6 choice">
+	<img src="{% static "imr/img/tool_submit.png" %}"/>
+	</div>
+
+	
+</div>
+{% endblock %}
