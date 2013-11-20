@@ -1,0 +1,217 @@
+<html>
+<head>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+<div id="viz">
+</div>
+
+<script>
+var width=1200;
+var height=800;
+var svg = d3.select("#viz")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+
+var data=[
+{
+	"name":"world",
+	"offer":900000,
+	"yeld":0.07,
+	"demand":4367,
+	"population":6000000000 
+},
+{
+	"name":"italy",
+	"offer":10000,
+	"yeld":0.03,
+	"demand":390,
+	"population":45000000
+},
+{
+	"name":"milan",
+	"offer":460,
+	"yeld":0.09,
+	"demand":80,
+	"population":2000000
+},
+{
+	"name":"bovisa",
+	"offer":90,
+	"yeld":0.09,
+	"demand":8,
+	"population":150000
+}
+]
+
+var rad=70,
+defsiz=240,
+defy=300,
+num=data.length,
+year=2000,
+sunx=width/2,
+suny=20;
+
+var sunlerp = d3.scale.log().base(2).range([1, 30]);
+sunlerp.domain([1, d3.max(data, function(d) { return d.offer; })]);
+
+var poplerp = d3.scale.linear().range([0.01,6.28]);
+
+
+sunlines=svg.append("g")
+.attr("class","sunlines");
+
+regions=svg.append("g")
+.attr("class","regions");
+
+function computeSpaces() {
+
+	totsiz=defsiz*num;
+	oversiz=width-totsiz;
+	start=oversiz/2;
+	totpop=0;
+
+	for(i =0; i<num; i++) {
+		totpop=totpop+data[i].population
+	}
+	poplerp.domain([0,totpop]);
+
+	for(i =0; i<num; i++) {
+		s=start+defsiz*i;
+		data[i].num=i;
+
+		regions.append("g")
+		.attr("class","region"+i);
+
+		data[i].x=start+defsiz*i+defsiz/2;
+		data[i].y=defy;
+
+		data[i].leTotOffer=sunlerp(data[i].offer)
+		data[i].leDemand=sunlerp(data[i].demand)
+		data[i].leYeld=sunlerp(data[i].offer*data[i].yeld)
+		data[i].leOffer=sunlerp(data[i].offer*(1-data[i].yeld))
+
+		createSunLines(data[i]);
+		createOutLines(data[i]);
+
+		d3.select(".region"+i).append("circle")
+		.attr("cx",data[i].x)
+		.attr("cy",data[i].y)
+		.style("stroke","gray")
+		.style("stroke-width","3")
+		.style("fill","white")
+		.attr("r",rad);
+
+		d3.select(".region"+i).append("circle")
+		.attr("cx",data[i].x)
+		.attr("cy",data[i].y)
+		.style("stroke","#eee")
+		.style("stroke-width","1")
+		.style("fill","none")
+		.attr("r",rad*3/4);
+		
+		createArcs(data[i]);
+	}
+}
+
+function createSunLines(d) {
+      var x0 = sunx-d.leOffer/2,
+          x1 = d.x-d.leOffer/2-3,
+          y0 = suny,
+          y1 = d.y,
+          yi = d3.interpolateNumber(y0, y1/2),
+          y2 = yi(.5),
+          y3 = yi(1 - .5);
+          
+        sunlines.append("path")
+        .style("stroke", "#efce47")
+        .style("stroke-width", d.leOffer)
+        .attr("fill","none")
+        .attr("d", "M" + x0 + "," + y0
+           + "C" + x0 + "," + y2
+           + " " + x1 + "," + y3
+           + " " + x1 + "," + (y1-70)
+           + "L" + x1 + "," + y1);
+
+    var x0 = sunx+d.leYeld/2,
+          x1 = d.x+d.leYeld/2+3,
+          y0 = suny,
+          y1 = d.y,
+          yi = d3.interpolateNumber(y0, y1/2),
+          y2 = yi(.5),
+          y3 = yi(1 - .5);
+
+    	sunlines.append("path")
+        .style("stroke", "#efce47")
+        .style("stroke-width", d.leYeld)
+        .attr("fill","none")
+        .attr("d", "M" + x0 + "," + y0
+           + "C" + x0 + "," + y2
+           + " " + x1 + "," + y3
+           + " " + x1 + "," + (y1-70)
+           + "L" + x1 + "," + y1); 	
+
+    }
+
+    function createOutLines(d) {
+    	d3.select(".region"+d.num)
+    	.append("line")
+		.style("stroke", "#e0b338")
+		.style("stroke-width", d.leOffer)
+		.attr("x1", d.x-d.leOffer/2)
+		.attr("y1", d.y-70+d.leOffer/3)
+		.attr("x2", d.x-d.leOffer/2-d.leOffer*2.77)
+		.attr("y2", d.y-70+d.leOffer/3-d.leOffer*2.77)
+		.attr("marker-end","url(#pointer)");
+
+		d3.select(".region"+d.num)
+    	.append("line")
+		.style("stroke", "#e0b338")
+		.style("stroke-width", d.leDemand)
+		.attr("x1", d.x-d.leOffer-d.leDemand)
+		.attr("y1", d.y-70+d.leDemand)
+		.attr("x2", d.x-d.leOffer-d.leDemand-d.leDemand*2.77)
+		.attr("y2", d.y-70+d.leDemand-d.leDemand*2.77)
+		.attr("marker-end","url(#pointer)");
+	}	
+
+	function createArcs(d) {
+		arc=d3.svg.arc()
+	    .innerRadius(rad*3/4)
+	    .outerRadius(rad-1)
+	    .startAngle(-poplerp(d.population)/2) //converting from degs to radians
+	    .endAngle(poplerp(d.population)/2);
+
+	    d3.select(".region"+d.num).append("path")
+		.attr("d", arc)
+	    .attr("transform", "translate("+d.x+","+d.y+")")
+	    .style("fill","#62ad6b");
+		}
+
+computeSpaces()
+
+
+
+
+
+
+svg.append("svg:defs")
+    .append("svg:marker")
+    .attr("id", "pointer")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#e0b338")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+
+
+</script>
+</body>
+</html>
