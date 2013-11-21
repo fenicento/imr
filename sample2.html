@@ -21,28 +21,40 @@ var data=[
 	"offer":900000,
 	"yeld":0.07,
 	"demand":4367,
-	"population":6000000000 
+	"population":6000000000,
+	"stock":4500000 
+},
+{
+	"name":"europe",
+	"offer":100000,
+	"yeld":0.03,
+	"demand":1200,
+	"population":739000000,
+	"stock":900000
 },
 {
 	"name":"italy",
 	"offer":10000,
 	"yeld":0.03,
 	"demand":390,
-	"population":45000000
+	"population":45000000,
+	"stock":40000
 },
 {
 	"name":"milan",
 	"offer":460,
 	"yeld":0.09,
 	"demand":80,
-	"population":2000000
+	"population":2000000,
+	"stock":2000
 },
 {
 	"name":"bovisa",
 	"offer":90,
 	"yeld":0.09,
 	"demand":8,
-	"population":150000
+	"population":150000,
+	"stock":800
 }
 ]
 
@@ -58,6 +70,7 @@ var sunlerp = d3.scale.log().base(2).range([1, 30]);
 sunlerp.domain([1, d3.max(data, function(d) { return d.offer; })]);
 
 var poplerp = d3.scale.linear().range([0.01,6.28]);
+var stocklerp = d3.scale.linear().range([0.1,6.28]);
 
 
 sunlines=svg.append("g")
@@ -72,11 +85,14 @@ function computeSpaces() {
 	oversiz=width-totsiz;
 	start=oversiz/2;
 	totpop=0;
+	totstock=0;
 
 	for(i =0; i<num; i++) {
 		totpop=totpop+data[i].population
+		totstock=totstock+data[i].stock
 	}
 	poplerp.domain([0,totpop]);
+	stocklerp.domain([0,totstock]);
 
 	for(i =0; i<num; i++) {
 		s=start+defsiz*i;
@@ -184,10 +200,22 @@ function createSunLines(d) {
 	    .startAngle(-poplerp(d.population)/2) //converting from degs to radians
 	    .endAngle(poplerp(d.population)/2);
 
+	    arc2=d3.svg.arc()
+	    .innerRadius(0)
+	    .outerRadius(rad*1/4)
+	    .startAngle(-stocklerp(d.stock)/2) //converting from degs to radians
+	    .endAngle(stocklerp(d.stock)/2);
+
 	    d3.select(".region"+d.num).append("path")
 		.attr("d", arc)
 	    .attr("transform", "translate("+d.x+","+d.y+")")
 	    .style("fill","#62ad6b");
+		
+
+		d3.select(".region"+d.num).append("path")
+		.attr("d", arc2)
+	    .attr("transform", "translate("+d.x+","+d.y+")")
+	    .style("fill","gray");
 		}
 
 computeSpaces()
