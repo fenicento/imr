@@ -97,7 +97,9 @@ var data=[
 		"3":2
 	}
 }
-]
+];
+
+
 
 var rad=70,
 defsiz=240,
@@ -189,7 +191,7 @@ function separationLines() {
 }
 
 function createSunLines(d) {
-      var x0 = sunx+(d.leOffer)*(d.num-(i/2)),
+      var x0 = sunx+(d.leOffer)*(d.num-(num/2)),
           x1 = d.x-d.leOffer/2-3,
           y0 = suny,
           y1 = d.y,
@@ -209,7 +211,7 @@ function createSunLines(d) {
            + " " + x1 + "," + (y1-70)
            + "L" + x1 + "," + y1);
 
-    var x0 = sunx+d.leYeld/2,
+    var x0 = sunx+d.leYeld*(d.num-(num/2)),
           x1 = d.x+d.leYeld/2+3,
           y0 = suny,
           y1 = d.y,

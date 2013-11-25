@@ -1,0 +1,811 @@
+<html>
+<head>
+	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+	<style>
+	body{font-family: sans-serif;}
+	svg{display:block; margin:0 auto;}
+	.space-name{font-weight: bold;text-transform: uppercase;}
+	#controls{width:1200px; margin:0 auto; clear:both;height:40px; margin-top:20px;}
+	#buttons{width:auto; float:right;}
+	.but{margin-left:5px;padding:5px 10px; background-color:#f8f8f8;border:1px solid gray;text-decoration: none;color:gray;}
+	.active{color:black;font-weight:bold;}
+	#years{float:left;}
+	.axis path,.axis line {fill: none; stroke: gray; shape-rendering: crispEdges;}
+	.axis text {font-family: sans-serif;font-size: 11px;color:gray;}
+	</style>
+</head>
+<body>
+<div id="controls">
+	<div id="years">
+		<div id="years-cont">
+		</div>
+	</div>
+	<div id="buttons">
+		<a class ="but" href="#" onclick="expandAll()">Expand all</a>
+		<a class ="but" href="#" onclick="mergeAll()">Merge all</a>
+	</div>
+</div>
+<div id="viz">
+</div>
+
+<script>
+var width=1200;
+var height=1200;
+var svg = d3.select("#viz")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+
+var data={
+    "2010": [
+        {
+            "name": "world",
+            "composite": false,
+            "offer": 900000,
+            "yeld": 0.07,
+            "demand": 4367,
+            "population": 6000000000,
+            "stock": 4500000,
+            "exchanges": {
+                "1": 300,
+                "2": 200,
+                "3": 100,
+                "4": 40
+            }
+        },
+        {
+            "name": "europe",
+            "composite": false,
+            "offer": 100000,
+            "yeld": 0.03,
+            "demand": 1200,
+            "population": 739000000,
+            "stock": 900000,
+            "exchanges": {
+                "0": 120,
+                "2": 100,
+                "3": 50,
+                "4": 30
+            }
+        },
+        {
+            "name": "italy",
+            "composite": false,
+            "offer": 10000,
+            "yeld": 0.03,
+            "demand": 390,
+            "population": 45000000,
+            "stock": 40000,
+            "exchanges": {
+                "0": 90,
+                "1": 60,
+                "3": 50,
+                "4": 10
+            }
+        },
+        {
+            "name": "milan",
+            "composite": false,
+            "offer": 460,
+            "yeld": 0.09,
+            "demand": 80,
+            "population": 2000000,
+            "stock": 2000,
+            "exchanges": {
+                "0": 30,
+                "1": 40,
+                "2": 10,
+                "4": 8
+            }
+        },
+        {
+            "name": "bovisa",
+            "composite": false,
+            "offer": 90,
+            "yeld": 0.09,
+            "demand": 8,
+            "population": 150000,
+            "stock": 800,
+            "exchanges": {
+                "0": 10,
+                "1": 8,
+                "2": 4,
+                "3": 2
+            }
+        }
+    ],
+    "2050": [
+        {
+            "name": "world",
+            "composite": false,
+            "offer": 900000,
+            "yeld": 0.17,
+            "demand": 5367,
+            "population": 4000000000,
+            "stock": 3500000,
+            "exchanges": {
+                "1": 400,
+                "2": 200,
+                "3": 300,
+                "4": 70
+            }
+        },
+        {
+            "name": "europe",
+            "composite": false,
+            "offer": 200000,
+            "yeld": 0.13,
+            "demand": 3200,
+            "population": 839000000,
+            "stock": 700000,
+            "exchanges": {
+                "0": 120,
+                "2": 100,
+                "3": 50,
+                "4": 30
+            }
+        },
+        {
+            "name": "italy",
+            "composite": false,
+            "offer": 10000,
+            "yeld": 0.13,
+            "demand": 690,
+            "population": 75000000,
+            "stock": 30000,
+            "exchanges": {
+                "0": 90,
+                "1": 60,
+                "3": 50,
+                "4": 10
+            }
+        },
+        {
+            "name": "milan",
+            "composite": false,
+            "offer": 460,
+            "yeld": 0.19,
+            "demand": 100,
+            "population": 4000000,
+            "stock": 1000,
+            "exchanges": {
+                "0": 30,
+                "1": 40,
+                "2": 10,
+                "4": 8
+            }
+        },
+        {
+            "name": "bovisa",
+            "composite": false,
+            "offer": 90,
+            "yeld": 0.19,
+            "demand": 8,
+            "population": 190000,
+            "stock": 300,
+            "exchanges": {
+                "0": 10,
+                "1": 8,
+                "2": 4,
+                "3": 2
+            }
+        }
+    ]
+};
+
+fillYears();
+var rad=70,
+defsiz=240,
+defy=300,
+year=2000,
+sunx=width/2,
+suny=20;
+var curyear=d3.keys(data)[0];
+$(".y"+curyear).addClass("active");
+
+var currData=JSON.parse(JSON.stringify(data[curyear]));
+
+var sunlerp = d3.scale.log().base(2).range([1, 30]);
+var poplerp = d3.scale.linear().range([0.01,6.28]);
+var stocklerp = d3.scale.linear().range([0.1,6.28]);
+var exlerp = d3.scale.linear().range([1,30]);
+var totpop=0;
+var totstock=0;
+
+exchanges=svg.append("g")
+.attr("class","exchanges");
+
+regions=svg.append("g")
+.attr("class","regions");
+
+lines=svg.append("g")
+.attr("class","lines");
+
+function computeSpaces() {
+
+	totstock=0;
+	totpop=0;
+	
+	num=currData.length;
+	totsiz=defsiz*num;
+	oversiz=width-totsiz;
+	start=oversiz/2;
+
+	maxex=0;
+
+	for(i =0; i<num; i++) {
+		totpop=totpop+currData[i].population
+		totstock=totstock+currData[i].stock
+		curmax=d3.max(d3.values(currData[i].exchanges))
+		if(curmax>maxex) maxex=curmax;
+		s=start+defsiz*i;
+		currData[i].num=i;
+
+		currData[i].x=start+defsiz*i+defsiz/2;
+		currData[i].y=defy;
+	
+	}
+	poplerp.domain([0,totpop]);
+	stocklerp.domain([0,totstock]);
+	exlerp.domain([0,maxex]);
+	sunlerp.domain([1, d3.max(currData, function(d) { return d.offer; })]);
+
+	for(i =0; i<num; i++) {
+		
+
+		currData[i].leTotOffer=sunlerp(currData[i].offer)
+		currData[i].leDemand=sunlerp(currData[i].demand)
+		currData[i].leYeld=sunlerp(currData[i].offer*currData[i].yeld)
+		currData[i].leOffer=sunlerp(currData[i].offer*(1-currData[i].yeld))
+	}
+}
+
+
+function initialize() {
+
+d3.selectAll(".exchange").remove();
+d3.selectAll(".divline").remove();
+d3.selectAll(".chart").remove();
+
+
+//var re=regions.selectAll("g.region").data(currData,function(d){return d.name})
+//var li=lines.selectAll("line").data(currData,function(d){return d.name})
+
+
+var re=regions.selectAll("g.region").data(currData,function(d){return d.name})
+var li=lines.selectAll("line").data(currData,function(d){return d.name})
+
+computeSpaces()
+
+//CREATE REGIONS
+re.enter()
+.append("g")
+.attr("class",function(d){return "region "+d.name});
+
+re.exit().remove()
+
+//CREATE LINES
+
+li.enter()
+.append("line")
+.filter(function(d, i) { return i >0 })
+.attr("x1",function(d) {return parseInt(d.x-defsiz/2)})
+.attr("y1",20)
+.attr("x2",function(d) {return d.x-defsiz/2})
+.attr("y2",height)
+.style("stroke", "gray")
+.attr("class","divline")
+.style("stroke-width", 1)
+.style("stroke-dasharray", ("3, 3"))
+.style("opacity", 0.3);
+
+//CREATE SUN LINES
+
+re
+.append("path")
+.style("stroke", "#efce47")
+.attr("fill","none")
+.attr("class",function(d){ return "sun "+d.name});
+
+re.selectAll("path.sun")
+.transition()
+.style("stroke-width", function(d){ return d.leOffer})
+.attr("d", function(d) {return createSunLine(d)});
+
+//CREATE YELD LINES
+
+re
+.append("path")
+.style("stroke", "#efce47")
+.attr("fill","none")
+.attr("class",function(d) {return "yeld "+d.name});
+
+re.selectAll("path.yeld")
+.transition()
+.style("stroke-width", function(d){return d.leYeld})
+.attr("d",function(d) {return createYeldLine(d)});
+
+
+//CREATE REFLECTED SUN LINES
+re
+.append("line")
+.style("stroke", "#e0b338")
+.attr("class",function(d) {return "reflect "+d.name})
+.attr("marker-end","url(#pointer)");
+
+re.selectAll("line.reflect")
+.transition()
+.style("stroke-width", function(d){return d.leOffer})
+.attr("x1",  function(d){return d.x-d.leOffer/2})
+.attr("y1",  function(d){return d.y-70+d.leOffer/3})
+.attr("x2",  function(d){return d.x-d.leOffer/2-d.leOffer*2.77})
+.attr("y2",  function(d){return d.y-70+d.leOffer/3-d.leOffer*2.77});
+
+//CREATE CONSUMPTION LINE
+re
+.append("line")
+.attr("class",function(d) {return "consumption "+d.name})
+.style("stroke", "#e0b338")
+.attr("marker-end","url(#pointer)");
+
+re.selectAll("line.consumption")
+.transition()
+.style("stroke-width",  function(d){return d.leDemand})
+.attr("x1",  function(d){return d.x-d.leOffer-d.leDemand})
+.attr("y1",  function(d){return d.y-70+d.leDemand})
+.attr("x2",  function(d){return d.x-d.leOffer-d.leDemand-d.leDemand*2.77})
+.attr("y2",  function(d){return d.y-70+d.leDemand-d.leDemand*2.77});
+
+//CREATE EXCHANGES
+d3.selectAll(".region")
+.each(function(e){createExchanges(e)});
+
+//CREATE CIRCLES
+re
+.append("circle")
+.attr("class",function(d) {return "item "+d.name})
+.style("stroke","gray")
+.style("stroke-width","3")
+.style("fill","white")
+.attr("r",rad)
+.on("click",function(d) {
+	if(d.grouped && d.grouped.length>0) {
+		expand(d);
+	}
+
+	else if(d.num>0) {
+		merge(d);
+	}
+})
+
+re.selectAll("circle.item")
+.transition()
+.attr("cx",function(d){return d.x})
+.attr("cy",function(d){return d.y});
+
+re.append("circle")
+.attr("class",function(d) {return "popline "+d.name})
+.style("stroke","#eee")
+.style("stroke-width","1")
+.style("fill","none")
+.attr("r",rad*3/4);
+
+re.selectAll("circle.popline")
+.transition()
+.attr("cx",function(d){return d.x})
+.attr("cy",function(d){return d.y});
+
+re.append("circle")
+.attr("class",function(d) {return "stockline "+d.name})
+.style("stroke","#eee")
+.style("stroke-width","1")
+.style("fill","none")
+.attr("r",rad*1/4);
+
+re.selectAll("circle.stockline")
+.transition()
+.attr("cx",function(d){return d.x})
+.attr("cy",function(d){return d.y});
+//createArcs(data[i]);
+//addText(data[i]);
+
+arc = d3.svg.arc()
+.innerRadius(rad*3/4)
+.outerRadius(rad-1)
+.startAngle(function(d){return -poplerp(d.population)/2}) //converting from degs to radians
+.endAngle(function(d){return poplerp(d.population)/2});
+
+arc2 = d3.svg.arc()
+.innerRadius(0)
+.outerRadius(rad*1/4)
+.startAngle(function(d){return -stocklerp(d.stock)/2}) //converting from degs to radians
+.endAngle(function(d){return stocklerp(d.stock)/2});
+	    
+//CREATE PIES
+re.append("path")
+.attr("class",function(d) {return "surface "+d.name})
+.style("fill","#62ad6b");
+
+re.selectAll("path.surface")
+.attr("d", arc)
+.attr("transform", function(d){return "translate("+d.x+","+d.y+")"});
+
+re.append("path")
+.attr("class",function(d) {return "stock "+d.name})
+.style("fill","gray");
+
+re.selectAll("path.stock")
+.attr("d", arc2)
+.attr("transform", function(d){return "translate("+d.x+","+d.y+")"});
+
+
+//ADD TEXT
+re
+.append("text")
+.attr("class","space-name")
+.attr("text-anchor", "middle")
+.attr("y", 500)
+.attr("font-family", "sans-serif")
+.attr("font-size", "14px")
+.attr("fill", "gray");
+
+d3.selectAll("text.space-name")
+.attr("x", function(d) { return d.x })
+.text( function (d) { return d.name})
+
+re
+.append("text")
+.attr("class","space-pop")
+.attr("text-anchor", "middle")
+.attr("y", 520)
+.attr("font-family", "sans-serif")
+.attr("font-size", "14px")
+.attr("fill", "gray");
+
+d3.selectAll("text.space-pop")
+.attr("x", function(d) { return d.x })
+.text( function (d) { return ((d.population/totpop)*100).toFixed(2)+"% population"})
+
+re
+.append("text")
+.attr("class","space-stock")
+.attr("text-anchor", "middle")
+.attr("y", 540)
+.attr("font-family", "sans-serif")
+.attr("font-size", "14px")
+.attr("fill", "gray");
+
+d3.selectAll("text.space-stock")
+.attr("x", function(d) { return d.x })
+.text( function (d) { return ((d.stock/totstock)*100).toFixed(2)+"% stock"})
+
+re.exit().remove()
+
+createCharts();
+
+
+}
+
+function createSunLine(d) {
+      var x0 = sunx+d.leOffer/2*(d.num-(num/2)),
+          x1 = d.x-d.leOffer/2-3,
+          y0 = suny,
+          y1 = d.y,
+          yi = d3.interpolateNumber(y0, y1/2),
+          y2 = yi(.5),
+          y3 = yi(1 - .5);
+          
+        
+         return "M" + x0 + "," + y0
+           + "C" + x0 + "," + y2
+           + " " + x1 + "," + y3
+           + " " + x1 + "," + (y1-70)
+           + "L" + x1 + "," + y1;
+	}
+
+function createYeldLine(d) {
+    	  var x0 = sunx+d.leYeld/2*(d.num-(num/2)),
+          x1 = d.x+d.leYeld/2+3,
+          y0 = suny,
+          y1 = d.y,
+          yi = d3.interpolateNumber(y0, y1/2),
+          y2 = yi(.5),
+          y3 = yi(1 - .5);
+
+    	return "M" + x0 + "," + y0
+           + "C" + x0 + "," + y2
+           + " " + x1 + "," + y3
+           + " " + x1 + "," + (y1-70)
+           + "L" + x1 + "," + y1; 	
+
+    }
+		
+
+function createExchanges(d) {
+	d3.keys(d.exchanges).forEach(function(e,i,a) {
+		if(e<num) {
+			b=currData[e];
+			if(d.exchanges[e]>b.exchanges[d.num]) {
+				exchanges
+				.append("path")
+				.attr("class", "exchange "+d.num+" "+b.num)
+				.style("stroke", "gray")
+				.style("opacity","0.4")
+		        .style("stroke-width", exlerp(d.exchanges[e]-b.exchanges[d.num]))
+		        .attr("fill","none")
+		        .attr("d",dirlink(d.x,d.y,b["x"],b["y"],Math.abs(d.num-e)))
+		        .attr("marker-end","url(#pointer2)");
+
+			}
+		}
+	});
+}
+
+
+function dirlink(ax,ay,bx,by,i) {
+	
+      var x0 = ax,
+          x1 = bx-(rad+10)*0.86,
+          y0 = ay,
+          y1 = by+(rad+10)*0.5,
+          xi = d3.interpolateNumber(x0, x1),
+          x2 = xi(.5);
+          
+          
+      return "M" + x0 + "," + y0
+           + "Q" + x2 + "," + parseInt(y0+(x1-x0)*(0.5-i*0.05))
+           + " " + x1 + "," + y1;
+    }
+
+
+    function merge(d) {
+    	console.log("called merge on ",d);
+    	currData[d.num-1].population += d.population;
+    	currData[d.num-1].stock += d.stock;
+    	currData[d.num-1].offer += d.offer;
+    	currData[d.num-1].demand += d.demand;
+    	if (!currData[d.num-1].grouped) currData[d.num-1].grouped=[d.name];
+    	else currData[d.num-1].grouped.push(d.name);
+    	currData.splice(d.num,1);
+    	initialize();
+    	removeDuplicates(null);
+    	console.log("merged "+d.name);
+
+    }
+
+    function removeDuplicates(a) {
+
+    	if(a) {
+    	arr=$.makeArray($(".region").not("."+a))
+    	}
+    	else arr=$.makeArray($(".region"))  
+    	
+    	arr.forEach(function(e){
+    		
+	    	$(e).find(".sun").first().remove();
+	    	$(e).find(".yeld").first().remove();
+	    	$(e).find(".consumption").first().remove();
+	    	$(e).find(".reflect").first().remove();
+	    	$(e).find(".item").first().remove();
+	    	$(e).find(".surface").first().remove();
+	    	$(e).find(".stock").first().remove();
+	    	$(e).find(".space-name").first().remove();
+	    	$(e).find(".space-pop").first().remove();
+	    	$(e).find(".space-stock").first().remove();
+	    	$(e).find(".stockline").first().remove();
+	    	$(e).find(".popline").first().remove();
+    	})
+    }
+
+    function expand(d) {
+    	console.log("called expand")
+    	obj=$.grep(data[curyear], function(f){ return f.name == d.grouped[0]; });
+    	obj=obj[0];
+    	
+    	d.grouped.splice(0,1);
+    	newgroup=d.grouped;
+    	
+    	if(newgroup.length>1) {
+    		newgroup.forEach(function(e) {
+    			console.log("e",e)
+    			console.log(data[curyear])
+    			a=$.grep(data[curyear], function(f){ return f.name == e; })[0];
+    			console.log("a",a)
+    			console.log("subtracting "+a.name+" to "+obj.name)
+    			obj.population += a.population;
+		    	obj.stock += a.stock;
+		    	obj.offer += a.offer;
+		    	obj.demand += a.demand;
+    		})
+    	}
+    	d.population -= obj.population;
+		d.stock -= obj.stock;
+		d.offer -= obj.offer;
+		d.demand -= obj.demand;
+    	obj.grouped=newgroup;
+    	d.grouped=[];
+    	currData.splice(d.num+1,0,obj);
+    	initialize();
+    	removeDuplicates(obj.name);
+    	console.log("expanded "+obj.name) 
+    }
+
+    function expandAll() {
+    	currData=JSON.parse(JSON.stringify(data[curyear]));
+
+		$(".region").remove();
+    	initialize();
+    }
+
+    function mergeAll() {
+    	while(currData.length>1) {
+    		merge(currData[1]);
+    	}
+    }
+
+    function changeYear(i) {
+    	if(i!=curyear) {
+    		$(".active").removeClass("active");
+    		$(".y"+i).addClass("active");
+    		toShrink=[]
+	    	newData=JSON.parse(JSON.stringify(data[i]));
+	    	
+	    	currData.forEach(function(e){
+	    		if(e.grouped && e.grouped.length>0) {
+	    			e.grouped.forEach(function(r){
+	    				toShrink.push(r);
+	    			})
+	    		}
+	    	})
+	    	
+	    	currData=newData;
+	    	$(".region").remove();
+	    	initialize();
+
+	    	toShrink.forEach(function(e){
+	    	
+	    		ts=$.grep(currData, function(f){ return f.name == e })[0];
+	    		console.log("ts",ts)
+	    		merge(ts);
+	    	})
+	    }
+	    curyear=i;
+    }
+    function fillYears() {
+	d3.keys(data).forEach(function(e){
+		$("#years-cont").append('<a class="but y'+e+'" href="#" onclick="changeYear('+e+')">'+e+'</a>')
+
+	})
+}
+
+initialize()
+
+
+
+
+
+
+//============================================================================
+// SECTION 2 - LINE GRAPHS
+//============================================================================
+
+function createCharts() {
+
+//Data by countries
+var years=d3.map(data).keys()
+var lines={};
+var xlerp = d3.scale.linear().range([30, 210]);
+var ylerp = d3.scale.log().range([60,1]);
+var xAxis = d3.svg.axis();
+var formatxAxis = d3.format('.0f');
+xAxis
+.scale(xlerp)
+.tickFormat(formatxAxis)
+
+years.forEach(function(year) {
+
+	k=d3.values(data[year]);
+	
+	k.forEach(function(ob) {
+		
+		ob.year=year
+		if(!lines[ob.name]) lines[ob.name]=[]
+		lines[ob.name].push(ob);
+	})
+});
+
+
+
+
+
+
+var valueline1 = d3.svg.line()
+.x(function(d) { return xlerp(d.year); })
+.y(function(d) { return ylerp(d.population); });
+
+var valueline2 = d3.svg.line()
+.x(function(d) { return xlerp(d.year) })
+.y(function(d) { return ylerp(d.demand) });
+
+var valueline3 = d3.svg.line()
+.x(function(d) { return xlerp(d.year); })
+.y(function(d) { return ylerp(d.yeld*100); });
+
+d3.selectAll(".region").each(function(d){
+
+
+		chart=d3.select(this)
+		.append("g")
+		.attr("class","chart")
+		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+600+")"});
+
+		maxpop=d3.max(lines[d.name],function(e){return e.population})
+		minyeld=d3.min(lines[d.name],function(e){return e.yeld})
+		console.log(minyeld,maxpop)
+
+		maxyear=d3.max(lines[d.name],function(e){return e.year})
+		minyear=d3.min(lines[d.name],function(e){return e.year})
+
+		xAxis.tickValues([minyear, maxyear]);
+
+		ylerp.domain([minyeld,maxpop]);
+		xlerp.domain([minyear,maxyear]);
+
+		chart.append("path")      // Add the valueline2 path.
+        .attr("class", "valueline "+d.name)
+        .style("stroke","red")
+        .attr("d", valueline1(lines[d.name]))
+
+        chart.append("path")      // Add the valueline2 path.
+        .attr("class", "valueline "+d.name)
+        .style("stroke","green")
+        .attr("d", valueline2(lines[d.name]));
+
+        chart.append("path")      // Add the valueline2 path.
+        .attr("class", "valueline "+d.name)
+        .style("stroke","blue")
+        .attr("d", valueline3(lines[d.name]));
+		
+		chart.append("g")
+		.attr("class", "axis")
+		.call(xAxis)
+		.attr("transform", "translate(0," + 60 + ")")
+//var valueline2 = d3.svg.line()
+//    .x(function(d) { return x(d.date); })
+//    .y(function(d) { return y(d.open); });
+})
+
+}
+
+defs=svg.append("svg:defs")
+    defs.append("svg:marker")
+    .attr("id", "pointer")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#e0b338")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+defs.append("svg:marker")
+    .attr("id", "pointer2")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","gray")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+
+</script>
+</body>
+</html>
