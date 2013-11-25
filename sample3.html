@@ -46,14 +46,14 @@ var data={
             "composite": false,
             "offer": 900000,
             "yeld": 0.07,
-            "demand": 4367,
+            "demand": 8436700,
             "population": 6000000000,
             "stock": 4500000,
             "exchanges": {
-                "1": 300,
-                "2": 200,
-                "3": 100,
-                "4": 40
+                "europe": 300,
+                "italy": 200,
+                "milan": 100,
+                "bovisa": 40
             }
         },
         {
@@ -61,14 +61,14 @@ var data={
             "composite": false,
             "offer": 100000,
             "yeld": 0.03,
-            "demand": 1200,
+            "demand": 1120000,
             "population": 739000000,
             "stock": 900000,
             "exchanges": {
-                "0": 120,
-                "2": 100,
-                "3": 50,
-                "4": 30
+                "world": 120,
+                "italy": 100,
+                "milan": 50,
+                "bovisa": 30
             }
         },
         {
@@ -76,14 +76,14 @@ var data={
             "composite": false,
             "offer": 10000,
             "yeld": 0.03,
-            "demand": 390,
+            "demand": 139000,
             "population": 45000000,
             "stock": 40000,
             "exchanges": {
-                "0": 90,
-                "1": 60,
-                "3": 50,
-                "4": 10
+                "world": 90,
+                "europe": 60,
+                "milan": 50,
+                "bovisa": 10
             }
         },
         {
@@ -91,14 +91,14 @@ var data={
             "composite": false,
             "offer": 460,
             "yeld": 0.09,
-            "demand": 80,
+            "demand": 48000,
             "population": 2000000,
             "stock": 2000,
             "exchanges": {
-                "0": 30,
-                "1": 40,
-                "2": 10,
-                "4": 8
+                "world": 30,
+                "europe": 40,
+                "italy": 10,
+                "bovisa": 8
             }
         },
         {
@@ -106,14 +106,14 @@ var data={
             "composite": false,
             "offer": 90,
             "yeld": 0.09,
-            "demand": 8,
+            "demand": 3000,
             "population": 150000,
             "stock": 800,
             "exchanges": {
-                "0": 10,
-                "1": 8,
-                "2": 4,
-                "3": 2
+                "world": 10,
+                "europe": 8,
+                "italy": 4,
+                "milan": 2
             }
         }
     ],
@@ -123,14 +123,14 @@ var data={
             "composite": false,
             "offer": 900000,
             "yeld": 0.17,
-            "demand": 5367,
+            "demand": 8536700,
             "population": 4000000000,
             "stock": 3500000,
             "exchanges": {
-                "1": 400,
-                "2": 200,
-                "3": 300,
-                "4": 70
+                "europe": 400,
+                "italy": 200,
+                "milan": 300,
+                "bovisa": 70
             }
         },
         {
@@ -138,14 +138,14 @@ var data={
             "composite": false,
             "offer": 200000,
             "yeld": 0.13,
-            "demand": 3200,
+            "demand": 1320000,
             "population": 839000000,
             "stock": 700000,
             "exchanges": {
-                "0": 120,
-                "2": 100,
-                "3": 50,
-                "4": 30
+                "world": 120,
+                "italy": 100,
+                "milan": 50,
+                "bovisa": 30
             }
         },
         {
@@ -153,14 +153,14 @@ var data={
             "composite": false,
             "offer": 10000,
             "yeld": 0.13,
-            "demand": 690,
+            "demand": 169000,
             "population": 75000000,
             "stock": 30000,
             "exchanges": {
-                "0": 90,
-                "1": 60,
-                "3": 50,
-                "4": 10
+                "world": 90,
+                "europe": 60,
+                "milan": 50,
+                "bovisa": 10
             }
         },
         {
@@ -168,14 +168,14 @@ var data={
             "composite": false,
             "offer": 460,
             "yeld": 0.19,
-            "demand": 100,
+            "demand": 60000,
             "population": 4000000,
             "stock": 1000,
             "exchanges": {
-                "0": 30,
-                "1": 40,
-                "2": 10,
-                "4": 8
+                "world": 30,
+                "europe": 40,
+                "italy": 10,
+                "bovisa": 8
             }
         },
         {
@@ -183,14 +183,14 @@ var data={
             "composite": false,
             "offer": 90,
             "yeld": 0.19,
-            "demand": 8,
+            "demand": 4800,
             "population": 190000,
             "stock": 300,
             "exchanges": {
-                "0": 10,
-                "1": 8,
-                "2": 4,
-                "3": 2
+                "world": 10,
+                "europe": 8,
+                "italy": 4,
+                "milan": 2
             }
         }
     ]
@@ -211,9 +211,13 @@ var currData=JSON.parse(JSON.stringify(data[curyear]));
 var sunlerp = d3.scale.log().base(2).range([1, 30]);
 var poplerp = d3.scale.linear().range([0.01,6.28]);
 var stocklerp = d3.scale.linear().range([0.1,6.28]);
-var exlerp = d3.scale.linear().range([1,30]);
+var exlerp = d3.scale.linear().range([1,20]);
 var totpop=0;
 var totstock=0;
+var netExchanges=[];
+
+exc=svg.append("g")
+.attr("class","netexchanges");
 
 exchanges=svg.append("g")
 .attr("class","exchanges");
@@ -223,6 +227,8 @@ regions=svg.append("g")
 
 lines=svg.append("g")
 .attr("class","lines");
+
+
 
 function computeSpaces() {
 
@@ -269,6 +275,10 @@ function initialize() {
 d3.selectAll(".exchange").remove();
 d3.selectAll(".divline").remove();
 d3.selectAll(".chart").remove();
+d3.selectAll(".flux").remove();
+d3.selectAll(".netexchanges").empty();
+
+netExchanges=[];
 
 
 //var re=regions.selectAll("g.region").data(currData,function(d){return d.name})
@@ -296,11 +306,10 @@ li.enter()
 .attr("y1",20)
 .attr("x2",function(d) {return d.x-defsiz/2})
 .attr("y2",height)
-.style("stroke", "gray")
+.style("stroke", "#ccc")
 .attr("class","divline")
 .style("stroke-width", 1)
 .style("stroke-dasharray", ("3, 3"))
-.style("opacity", 0.3);
 
 //CREATE SUN LINES
 
@@ -354,10 +363,10 @@ re
 re.selectAll("line.consumption")
 .transition()
 .style("stroke-width",  function(d){return d.leDemand})
-.attr("x1",  function(d){return d.x-d.leOffer-d.leDemand})
+.attr("x1",  function(d){return d.x-d.leDemand*1.5})
 .attr("y1",  function(d){return d.y-70+d.leDemand})
-.attr("x2",  function(d){return d.x-d.leOffer-d.leDemand-d.leDemand*2.77})
-.attr("y2",  function(d){return d.y-70+d.leDemand-d.leDemand*2.77});
+.attr("x2",  function(d){return d.x-d.leDemand*1.5-d3.min([d.leDemand*2.77,40])})
+.attr("y2",  function(d){return d.y-70+d.leDemand-d3.min([d.leDemand*2.77,40])});
 
 //CREATE EXCHANGES
 d3.selectAll(".region")
@@ -486,6 +495,8 @@ re.exit().remove()
 
 createCharts();
 
+createFluxes();
+
 
 }
 
@@ -526,18 +537,23 @@ function createYeldLine(d) {
 
 function createExchanges(d) {
 	d3.keys(d.exchanges).forEach(function(e,i,a) {
-		if(e<num) {
-			b=currData[e];
-			if(d.exchanges[e]>b.exchanges[d.num]) {
+        b=$.grep(currData,function(r){return r.name==e});
+		if(b.length>0) {
+            b=b[0];
+			console.log(b);
+			if(d.exchanges[e]>b.exchanges[d.name]) {
 				exchanges
 				.append("path")
-				.attr("class", "exchange "+d.num+" "+b.num)
+				.attr("class", "exchange "+d.name+" "+b.name)
 				.style("stroke", "gray")
 				.style("opacity","0.4")
-		        .style("stroke-width", exlerp(d.exchanges[e]-b.exchanges[d.num]))
+		        .style("stroke-width", exlerp(d.exchanges[e]-b.exchanges[d.name]))
 		        .attr("fill","none")
-		        .attr("d",dirlink(d.x,d.y,b["x"],b["y"],Math.abs(d.num-e)))
+		        .attr("d",dirlink(d.x,d.y,b["x"],b["y"],Math.abs(d.num-i)))
 		        .attr("marker-end","url(#pointer2)");
+
+                
+                netExchanges.push({"source":d.name,"target":b.name,"value":exlerp(d.exchanges[e]-b.exchanges[d.name])});
 
 			}
 		}
@@ -684,13 +700,10 @@ function dirlink(ax,ay,bx,by,i) {
 initialize()
 
 
-
-
-
-
 //============================================================================
 // SECTION 2 - LINE GRAPHS
 //============================================================================
+
 
 function createCharts() {
 
@@ -698,7 +711,7 @@ function createCharts() {
 var years=d3.map(data).keys()
 var lines={};
 var xlerp = d3.scale.linear().range([30, 210]);
-var ylerp = d3.scale.log().range([60,1]);
+var ylerp = d3.scale.log().base(2).range([60,1]);
 var xAxis = d3.svg.axis();
 var formatxAxis = d3.format('.0f');
 xAxis
@@ -740,7 +753,7 @@ d3.selectAll(".region").each(function(d){
 		chart=d3.select(this)
 		.append("g")
 		.attr("class","chart")
-		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+600+")"});
+		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+900+")"});
 
 		maxpop=d3.max(lines[d.name],function(e){return e.population})
 		minyeld=d3.min(lines[d.name],function(e){return e.yeld})
@@ -780,6 +793,204 @@ d3.selectAll(".region").each(function(d){
 
 }
 
+
+//=====================================================================
+// FLUXES
+//=====================================================================
+
+
+
+function createFluxes() {
+    d3.selectAll(".region").each(function(d){
+
+        flux=d3.select(this)
+        .append("g")
+        .attr("class",function(e){return "flux "+d.name})
+
+        /*flux.append("rect")
+        .attr("x",function(e){return e.x-defsiz/2+30})
+        .attr("y",640)
+        .attr("width",defsiz-60)
+        .attr("height", 100)
+        .style("fill","none")
+        .style("stroke","gray")
+        .style("stroke-width",3)
+
+        flux.append("rect")
+        .attr("x",function(e){return e.x-defsiz/2+30})
+        .attr("y",640)
+        .attr("width",defsiz-60)
+        .attr("height", 8)
+        .style("fill","#62ad6b")
+        .style("stroke","none")*/
+
+        flux
+        .append("path")
+        .style("stroke", "#f2f2f2")
+        .style("fill","none")
+        
+        .attr("class",function(d) {return "offer "+d.name})
+        .transition()
+        .style("stroke-width", function(d){return d.leYeld})
+        .attr("d", function(d) {return createOfferLine(d)});
+
+        flux
+        .append("path")
+        .style("stroke", "#f2f2f2")
+        .style("fill","none")
+        .attr("marker-end","url(#pointer2)")
+        .attr("class",function(d) {return "demand "+d.name})
+        .transition()
+        .style("stroke-width", function(d){return d.leDemand})
+        .attr("d", function(d) {return createDemandLine(d)});
+
+         flux
+        .append("path")
+            .style("stroke", "#f2f2f2")
+            .style("fill","none")
+            .attr("class",function(d) {return "selfexchange "+d.name})
+            .style("stroke-width", function(d) {return d.leDemand-d.leYeld})
+            .style("stroke-linecap","round")
+            .attr("d", function(d) {
+                return dirlink3(d.x,710,d.x,620+2*d.leDemand/3,4)});
+
+
+        flux.append("rect")
+        .attr("x",function(e){return e.x-5})
+        .attr("y",620)
+        .attr("width",10)
+        .attr("height", function(d){return d.leDemand})
+        .style("fill","gray")
+        .style("stroke","none")
+
+        going=$.grep(netExchanges,function(r){return r.source==d.name})
+        
+        h=0
+
+        going.forEach(function(e){
+            exc
+            .append("path")
+            .style("stroke", "#f2f2f2")
+            .style("fill","none")
+            
+            .attr("class",function(d) {return "exchange "+e.source+" "+e.target})
+            .transition()
+            .style("stroke-width", e.value)
+            .style("stroke-linecap","round")
+            .attr("d", function() {
+                source=$.grep(currData,function(r){return r.name==e.source})[0]
+                target=$.grep(currData,function(r){return r.name==e.target})[0]
+                return dirlink2(source.x,710,target.x,620+target.leYeld,4)});
+            h+=e.value;
+        })
+        
+       
+
+        flux
+        .append("circle")
+        .attr("class",function(d) {return "stockCircle "+d.name})
+        .style("stroke","none")
+        .style("fill","gray")
+        .attr("r",function(d){return sunlerp(d.stock)})
+        .attr("cx",function(d){return d.x})
+        .attr("cy",710);
+
+        flux
+        .append("circle")
+        .attr("class",function(d) {return "spaceOutline "+d.name})
+        .style("stroke","gray")
+        .style("stroke-width","2")
+        .style("fill","none")
+        .style("opacity","0.2")
+        .style("stroke-dasharray", ("3, 3"))
+        .attr("r",rad+20)
+        .attr("cx",function(d){return d.x})
+        .attr("cy",710);
+
+    })
+}
+
+
+    function dirlink3(ax,ay,bx,by,i) {
+    
+      var x0 = ax,
+          x1 = bx,
+          y0 = ay,
+          y1 = by,
+          yi = d3.interpolateNumber(y0, y1),
+          y2 = yi(.5);
+          
+          
+      return "M" + x0 + "," + y0
+           + "Q" + parseInt(x0+(y1-y0)) + "," + y1
+           + " " + x1 + "," + y1;
+          
+    }
+
+    function dirlink2(ax,ay,bx,by,i) {
+    
+      var x0 = ax,
+          x1 = bx,
+          y0 = ay,
+          y1 = by,
+          xi = d3.interpolateNumber(x0, x1),
+          x2 = xi(.5);
+          
+          
+      return "M" + x0 + "," + y0
+           + "C" + x2 + "," + parseInt(y0+(x1-x0)*(0.5-i*0.05))
+           + " " + (x1-60) + "," + y1
+           + " " + x1 + "," + y1;
+    }
+
+    function createExchangeLine(e,h) {
+        
+        source=$.grep(currData,function(r){return r.name==e.source})[0]
+        target=$.grep(currData,function(r){return r.name==e.target})[0]
+        console.log(e,source,target)
+        var x0 = source.x-70,
+          x1 = target.x-70,
+          y0 = 710+h,
+          y1 = 710+h,
+          xi = d3.interpolateNumber(x0, x1),
+          x2 = xi(.7);
+                   
+      return "M" + x0 + "," + y0
+           + "Q" + x2 + "," + y1
+           + " " + x1 + "," + y1;
+    }
+
+    function createOfferLine(d) {
+
+        var x0 = d.x-defsiz/2+30,
+          x1 = d.x,
+          y0 = 590,
+          y1 = 620+d.leYeld/2,
+          xi = d3.interpolateNumber(x0, x1),
+          x2 = xi(.5);
+                   
+      return "M" + x0 + "," + y0
+           + "Q" + x2 + "," + y1
+           + " " + x1 + "," + y1;
+
+    }
+
+    function createDemandLine(d) {
+
+        var x1 = d.x+defsiz/2-30,
+          x0 = d.x,
+          y1 = 590,
+          y0 = 620+d.leDemand/2,
+          xi = d3.interpolateNumber(x0, x1),
+          x2 = xi(.5);
+                   
+      return "M" + x0 + "," + y0
+           + "Q" + x2 + "," + y0
+           + " " + x1 + "," + y1;
+
+    }
+
+
 defs=svg.append("svg:defs")
     defs.append("svg:marker")
     .attr("id", "pointer")
@@ -797,6 +1008,18 @@ defs.append("svg:marker")
     .attr("id", "pointer2")
     .attr("viewBox", "0 -5 10 10")
     .style("fill","gray")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+    defs.append("svg:marker")
+    .attr("id", "pointer2")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#f2f2f2")
     .attr("refX", 0.2)
     .attr("refY", 0)
     .attr("markerWidth", 1)
