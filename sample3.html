@@ -5,6 +5,7 @@
     <script src="javascripts/jquery.tipsy.js"></script>
     <script src="jquery.atooltip.min.js"></script>
     <link rel="stylesheet" href="stylesheets/tipsy.css" type="text/css" />
+    <title>REFORME Energy Simulator</title>
 
 	<style>
 	body{font-family: sans-serif;}
@@ -16,7 +17,7 @@
 	.active{color:black;font-weight:bold;}
 	#years{float:left;}
 	.axis path,.axis line {fill: none; stroke: gray; shape-rendering: crispEdges;}
-	.axis text {font-family: sans-serif;font-size: 11px;color:gray;}
+	.axis text {font-family: sans-serif;font-size: 10px;color:gray;}
 	</style>
 </head>
 <body>
@@ -41,9 +42,240 @@ var svg = d3.select("#viz")
         .attr("width", width)
         .attr("height", height);
 
-
+    
 var data={
-    "2010": [
+    "1750": [
+        {
+            "name": "world",
+            "composite": false,
+            "offer": 900000,
+            "yeld": 0.27,
+            "demand": 2436700,
+            "population": 1000000000,
+            "stock": 4500000,
+            "exchanges": {
+                "europe": 300,
+                "france": 200,
+                "paris": 100,
+                "parc_des_ports": 40
+            }
+        },
+        {
+            "name": "europe",
+            "composite": false,
+            "offer": 100000,
+            "yeld": 0.23,
+            "demand": 620000,
+            "population": 139000000,
+            "stock": 900000,
+            "exchanges": {
+                "world": 120,
+                "france": 100,
+                "paris": 50,
+                "parc_des_ports": 30
+            }
+        },
+        {
+            "name": "france",
+            "composite": false,
+            "offer": 10000,
+            "yeld": 0.23,
+            "demand": 39000,
+            "population": 15000000,
+            "stock": 40000,
+            "exchanges": {
+                "world": 90,
+                "europe": 60,
+                "paris": 50,
+                "parc_des_ports": 10
+            }
+        },
+        {
+            "name": "paris",
+            "composite": false,
+            "offer": 460,
+            "yeld": 0.29,
+            "demand": 2000,
+            "population": 500000,
+            "stock": 2000,
+            "exchanges": {
+                "world": 30,
+                "europe": 40,
+                "france": 10,
+                "parc_des_ports": 8
+            }
+        },
+        {
+            "name": "parc_des_ports",
+            "composite": false,
+            "offer": 90,
+            "yeld": 0.29,
+            "demand": 100,
+            "population": 2000,
+            "stock": 800,
+            "exchanges": {
+                "world": 10,
+                "europe": 8,
+                "france": 4,
+                "paris": 2
+            }
+        }
+    ],
+    "1850": [
+        {
+            "name": "world",
+            "composite": false,
+            "offer": 900000,
+            "yeld": 0.17,
+            "demand": 3436700,
+            "population": 2300000000,
+            "stock": 4500000,
+            "exchanges": {
+                "europe": 300,
+                "france": 200,
+                "paris": 100,
+                "parc_des_ports": 40
+            }
+        },
+        {
+            "name": "europe",
+            "composite": false,
+            "offer": 100000,
+            "yeld": 0.13,
+            "demand": 820000,
+            "population": 439000000,
+            "stock": 900000,
+            "exchanges": {
+                "world": 120,
+                "france": 100,
+                "paris": 50,
+                "parc_des_ports": 30
+            }
+        },
+        {
+            "name": "france",
+            "composite": false,
+            "offer": 10000,
+            "yeld": 0.13,
+            "demand": 79000,
+            "population": 25000000,
+            "stock": 40000,
+            "exchanges": {
+                "world": 90,
+                "europe": 60,
+                "paris": 50,
+                "parc_des_ports": 10
+            }
+        },
+        {
+            "name": "paris",
+            "composite": false,
+            "offer": 460,
+            "yeld": 0.19,
+            "demand": 5000,
+            "population": 700000,
+            "stock": 2000,
+            "exchanges": {
+                "world": 30,
+                "europe": 40,
+                "france": 10,
+                "parc_des_ports": 8
+            }
+        },
+        {
+            "name": "parc_des_ports",
+            "composite": false,
+            "offer": 90,
+            "yeld": 0.19,
+            "demand": 100,
+            "population": 1000,
+            "stock": 800,
+            "exchanges": {
+                "world": 10,
+                "europe": 8,
+                "france": 4,
+                "paris": 2
+            }
+        }
+    ],
+    "1950": [
+        {
+            "name": "world",
+            "composite": false,
+            "offer": 900000,
+            "yeld": 0.09,
+            "demand": 6436700,
+            "population": 5000000000,
+            "stock": 4500000,
+            "exchanges": {
+                "europe": 300,
+                "france": 200,
+                "paris": 100,
+                "parc_des_ports": 40
+            }
+        },
+        {
+            "name": "europe",
+            "composite": false,
+            "offer": 100000,
+            "yeld": 0.06,
+            "demand": 920000,
+            "population": 639000000,
+            "stock": 900000,
+            "exchanges": {
+                "world": 120,
+                "france": 100,
+                "paris": 50,
+                "parc_des_ports": 30
+            }
+        },
+        {
+            "name": "france",
+            "composite": false,
+            "offer": 10000,
+            "yeld": 0.06,
+            "demand": 119000,
+            "population": 35000000,
+            "stock": 40000,
+            "exchanges": {
+                "world": 90,
+                "europe": 60,
+                "paris": 50,
+                "parc_des_ports": 10
+            }
+        },
+        {
+            "name": "paris",
+            "composite": false,
+            "offer": 460,
+            "yeld": 0.12,
+            "demand": 38000,
+            "population": 1500000,
+            "stock": 2000,
+            "exchanges": {
+                "world": 30,
+                "europe": 40,
+                "france": 10,
+                "parc_des_ports": 8
+            }
+        },
+        {
+            "name": "parc_des_ports",
+            "composite": false,
+            "offer": 90,
+            "yeld": 0.12,
+            "demand": 1000,
+            "population": 30000,
+            "stock": 800,
+            "exchanges": {
+                "world": 10,
+                "europe": 8,
+                "france": 4,
+                "paris": 2
+            }
+        }
+    ],
+    "2000": [
         {
             "name": "world",
             "composite": false,
@@ -54,9 +286,9 @@ var data={
             "stock": 4500000,
             "exchanges": {
                 "europe": 300,
-                "italy": 200,
-                "milan": 100,
-                "bovisa": 40
+                "france": 200,
+                "paris": 100,
+                "parc_des_ports": 40
             }
         },
         {
@@ -69,13 +301,13 @@ var data={
             "stock": 900000,
             "exchanges": {
                 "world": 120,
-                "italy": 100,
-                "milan": 50,
-                "bovisa": 30
+                "france": 100,
+                "paris": 50,
+                "parc_des_ports": 30
             }
         },
         {
-            "name": "italy",
+            "name": "france",
             "composite": false,
             "offer": 10000,
             "yeld": 0.03,
@@ -85,12 +317,12 @@ var data={
             "exchanges": {
                 "world": 90,
                 "europe": 60,
-                "milan": 50,
-                "bovisa": 10
+                "paris": 50,
+                "parc_des_ports": 10
             }
         },
         {
-            "name": "milan",
+            "name": "paris",
             "composite": false,
             "offer": 460,
             "yeld": 0.09,
@@ -100,12 +332,12 @@ var data={
             "exchanges": {
                 "world": 30,
                 "europe": 40,
-                "italy": 10,
-                "bovisa": 8
+                "france": 10,
+                "parc_des_ports": 8
             }
         },
         {
-            "name": "bovisa",
+            "name": "parc_des_ports",
             "composite": false,
             "offer": 90,
             "yeld": 0.09,
@@ -115,8 +347,8 @@ var data={
             "exchanges": {
                 "world": 10,
                 "europe": 8,
-                "italy": 4,
-                "milan": 2
+                "france": 4,
+                "paris": 2
             }
         }
     ],
@@ -127,13 +359,13 @@ var data={
             "offer": 900000,
             "yeld": 0.17,
             "demand": 8536700,
-            "population": 4000000000,
+            "population": 9000000000,
             "stock": 3500000,
             "exchanges": {
                 "europe": 400,
-                "italy": 200,
-                "milan": 300,
-                "bovisa": 70
+                "france": 200,
+                "paris": 300,
+                "parc_des_ports": 70
             }
         },
         {
@@ -146,13 +378,13 @@ var data={
             "stock": 700000,
             "exchanges": {
                 "world": 120,
-                "italy": 100,
-                "milan": 50,
-                "bovisa": 30
+                "france": 100,
+                "paris": 50,
+                "parc_des_ports": 30
             }
         },
         {
-            "name": "italy",
+            "name": "france",
             "composite": false,
             "offer": 10000,
             "yeld": 0.13,
@@ -162,12 +394,12 @@ var data={
             "exchanges": {
                 "world": 90,
                 "europe": 60,
-                "milan": 50,
-                "bovisa": 10
+                "paris": 50,
+                "parc_des_ports": 10
             }
         },
         {
-            "name": "milan",
+            "name": "paris",
             "composite": false,
             "offer": 460,
             "yeld": 0.19,
@@ -177,12 +409,12 @@ var data={
             "exchanges": {
                 "world": 30,
                 "europe": 40,
-                "italy": 10,
-                "bovisa": 8
+                "france": 10,
+                "parc_des_ports": 8
             }
         },
         {
-            "name": "bovisa",
+            "name": "parc_des_ports",
             "composite": false,
             "offer": 90,
             "yeld": 0.19,
@@ -192,8 +424,8 @@ var data={
             "exchanges": {
                 "world": 10,
                 "europe": 8,
-                "italy": 4,
-                "milan": 2
+                "france": 4,
+                "paris": 2
             }
         }
     ]
@@ -318,7 +550,7 @@ li.enter()
 
 re
 .append("path")
-.style("stroke", "#efce47")
+.style("stroke", "#ED653F")
 .attr("fill","none")
 .attr("class",function(d){ return "sun "+d.name})
 .append("title")
@@ -333,7 +565,7 @@ re.selectAll("path.sun")
 
 re
 .append("path")
-.style("stroke", "#efce47")
+.style("stroke", "#ED653F")
 .attr("fill","none")
 .attr("class",function(d) {return "yeld "+d.name});
 
@@ -346,7 +578,7 @@ re.selectAll("path.yeld")
 //CREATE REFLECTED SUN LINES
 re
 .append("line")
-.style("stroke", "#e0b338")
+.style("stroke", "#C06446")
 .attr("class",function(d) {return "reflect "+d.name})
 .attr("marker-end","url(#pointer)");
 
@@ -362,8 +594,8 @@ re.selectAll("line.reflect")
 re
 .append("line")
 .attr("class",function(d) {return "consumption "+d.name})
-.style("stroke", "#e0b338")
-.attr("marker-end","url(#pointer)");
+.style("stroke", "#695C4B")
+.attr("marker-end","url(#pointer5)");
 
 re.selectAll("line.consumption")
 .transition()
@@ -441,7 +673,7 @@ arc2 = d3.svg.arc()
 //CREATE PIES
 re.append("path")
 .attr("class",function(d) {return "surface "+d.name})
-.style("fill","#62ad6b");
+.style("fill","#2FBAB2");
 
 re.selectAll("path.surface")
 .attr("d", arc)
@@ -468,7 +700,7 @@ re
 
 d3.selectAll("text.space-name")
 .attr("x", function(d) { return d.x })
-.text( function (d) { return d.name})
+.text( function (d) { return d.name.replace("_"," ")})
 
 re
 .append("text")
@@ -712,17 +944,19 @@ initialize()
 
 function createCharts() {
 
+
 //Data by countries
 var years=d3.map(data).keys()
 var lines={};
 var xlerp = d3.scale.linear().range([30, 210]);
 var plerp = d3.scale.linear().range([60,1]);
-var dlerp = d3.scale.linear().range([60,1]);
+var dlerp = d3.scale.linear().range([50,15]);
 var nlerp = d3.scale.linear().range([60,1]);
 var xAxis = d3.svg.axis();
 var formatxAxis = d3.format('.0f');
 xAxis
 .scale(xlerp)
+.ticks(5)
 .tickFormat(formatxAxis)
 
 years.forEach(function(year) {
@@ -739,16 +973,28 @@ years.forEach(function(year) {
 
 
 var valueline1 = d3.svg.line()
+.interpolate("basis") 
 .x(function(d) { return xlerp(d.year); })
 .y(function(d) { return plerp(d.population); });
 
 var valueline2 = d3.svg.line()
+.interpolate("basis") 
 .x(function(d) { return xlerp(d.year) })
 .y(function(d) { return dlerp(d.demand) });
 
 var valueline3 = d3.svg.line()
+.interpolate("basis") 
 .x(function(d) { return xlerp(d.year); })
-.y(function(d) { return nlerp(d.yeld*100); });
+.y(function(d) { return nlerp(d.yeld); });
+
+svg.append("line")
+.attr("x1",0)
+.attr("y1",860)
+.attr("x2",width)
+.attr("y2",860)
+.style("stroke","gray")
+.style("stroke-width",2);
+
 
 d3.selectAll(".region").each(function(d){
 
@@ -761,14 +1007,14 @@ d3.selectAll(".region").each(function(d){
 		maxpop=d3.max(lines[d.name],function(e){return e.population})
 		minpop=d3.min(lines[d.name],function(e){return e.population})
 		minyeld=d3.min(lines[d.name],function(e){return e.yeld})
-		maxyeld=d3.min(lines[d.name],function(e){return e.yeld})
+		maxyeld=d3.max(lines[d.name],function(e){return e.yeld})
 		mindem=d3.min(lines[d.name],function(e){return e.demand})
-		maxdem=d3.min(lines[d.name],function(e){return e.demand})
+		maxdem=d3.max(lines[d.name],function(e){return e.demand})
 
 		maxyear=d3.max(lines[d.name],function(e){return e.year})
 		minyear=d3.min(lines[d.name],function(e){return e.year})
 
-		xAxis.tickValues([minyear, maxyear]);
+		//xAxis.tickValues([minyear, maxyear]);
 
 		plerp.domain([minpop,maxpop]);
 		dlerp.domain([mindem,maxdem]);
@@ -777,23 +1023,29 @@ d3.selectAll(".region").each(function(d){
 
 		chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
-        .style("stroke","red")
+        .style("stroke","#2FBAB2")
+        .style("stroke-width",2)
+        .style("fill","none")
         .attr("d", valueline1(lines[d.name]))
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
-        .style("stroke","green")
+        .style("stroke","695C4B")
+        .style("stroke-width",2)
+        .style("fill","none")
         .attr("d", valueline2(lines[d.name]));
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
-        .style("stroke","blue")
+        .style("stroke","#ED653F")
+        .style("stroke-width",2)
+        .style("fill","none")
         .attr("d", valueline3(lines[d.name]));
 		
 		chart.append("g")
 		.attr("class", "axis")
 		.call(xAxis)
-		.attr("transform", "translate(0," + 60 + ")")
+		.attr("transform", "translate(0," + 62 + ")")
 //var valueline2 = d3.svg.line()
 //    .x(function(d) { return x(d.date); })
 //    .y(function(d) { return y(d.open); });
@@ -878,7 +1130,7 @@ function createFluxes() {
             .style("stroke-width", function(d) {return d.leDemand-d.leYeld})
             .style("stroke-linecap","round")
             .attr("d", function(d) {
-                return dirlink3(d.x,710,d.x,620+2*d.leDemand/3,4)});
+                return dirlink3(d.x,710,d.x,620+3*d.leDemand/4,10)});
 
 
         flux.append("rect")
@@ -1021,7 +1273,7 @@ defs=svg.append("svg:defs")
     defs.append("svg:marker")
     .attr("id", "pointer")
     .attr("viewBox", "0 -5 10 10")
-    .style("fill","#e0b338")
+    .style("fill","#C06446")
     .attr("refX", 0.2)
     .attr("refY", 0)
     .attr("markerWidth", 1)
@@ -1058,6 +1310,18 @@ defs.append("svg:marker")
     .attr("id", "pointer4")
     .attr("viewBox", "0 -5 10 10")
     .style("fill","#aaaaaa")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+    defs.append("svg:marker")
+    .attr("id", "pointer5")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#695C4B")
     .attr("refX", 0.2)
     .attr("refY", 0)
     .attr("markerWidth", 1)
