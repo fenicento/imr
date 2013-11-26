@@ -2,6 +2,9 @@
 <head>
 	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="javascripts/jquery.tipsy.js"></script>
+    <script src="jquery.atooltip.min.js"></script>
+    <link rel="stylesheet" href="stylesheets/tipsy.css" type="text/css" />
 
 	<style>
 	body{font-family: sans-serif;}
@@ -317,7 +320,9 @@ re
 .append("path")
 .style("stroke", "#efce47")
 .attr("fill","none")
-.attr("class",function(d){ return "sun "+d.name});
+.attr("class",function(d){ return "sun "+d.name})
+.append("title")
+.text(function(d){return"<b>"+d.name+"</b><br/>reflected solar radiation"});
 
 re.selectAll("path.sun")
 .transition()
@@ -711,7 +716,9 @@ function createCharts() {
 var years=d3.map(data).keys()
 var lines={};
 var xlerp = d3.scale.linear().range([30, 210]);
-var ylerp = d3.scale.log().base(2).range([60,1]);
+var plerp = d3.scale.linear().range([60,1]);
+var dlerp = d3.scale.linear().range([60,1]);
+var nlerp = d3.scale.linear().range([60,1]);
 var xAxis = d3.svg.axis();
 var formatxAxis = d3.format('.0f');
 xAxis
@@ -731,21 +738,17 @@ years.forEach(function(year) {
 });
 
 
-
-
-
-
 var valueline1 = d3.svg.line()
 .x(function(d) { return xlerp(d.year); })
-.y(function(d) { return ylerp(d.population); });
+.y(function(d) { return plerp(d.population); });
 
 var valueline2 = d3.svg.line()
 .x(function(d) { return xlerp(d.year) })
-.y(function(d) { return ylerp(d.demand) });
+.y(function(d) { return dlerp(d.demand) });
 
 var valueline3 = d3.svg.line()
 .x(function(d) { return xlerp(d.year); })
-.y(function(d) { return ylerp(d.yeld*100); });
+.y(function(d) { return nlerp(d.yeld*100); });
 
 d3.selectAll(".region").each(function(d){
 
@@ -756,15 +759,20 @@ d3.selectAll(".region").each(function(d){
 		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+900+")"});
 
 		maxpop=d3.max(lines[d.name],function(e){return e.population})
+		minpop=d3.min(lines[d.name],function(e){return e.population})
 		minyeld=d3.min(lines[d.name],function(e){return e.yeld})
-		console.log(minyeld,maxpop)
+		maxyeld=d3.min(lines[d.name],function(e){return e.yeld})
+		mindem=d3.min(lines[d.name],function(e){return e.demand})
+		maxdem=d3.min(lines[d.name],function(e){return e.demand})
 
 		maxyear=d3.max(lines[d.name],function(e){return e.year})
 		minyear=d3.min(lines[d.name],function(e){return e.year})
 
 		xAxis.tickValues([minyear, maxyear]);
 
-		ylerp.domain([minyeld,maxpop]);
+		plerp.domain([minpop,maxpop]);
+		dlerp.domain([mindem,maxdem]);
+		nlerp.domain([minyeld,maxyeld]);
 		xlerp.domain([minyear,maxyear]);
 
 		chart.append("path")      // Add the valueline2 path.
@@ -806,6 +814,24 @@ function createFluxes() {
         flux=d3.select(this)
         .append("g")
         .attr("class",function(e){return "flux "+d.name})
+        .on("mouseover",function(){
+        	d3.selectAll(".flux path."+d.name)
+        	.style("stroke","#aaa");
+        	d3.selectAll(".netExchanges path."+d.name)
+        	.style("stroke","#aaa");
+        	d3.select(".demand."+d.name)
+        	.attr("marker-end","url(#pointer4)")
+
+        })
+
+        .on("mouseout",function(){
+        	d3.selectAll(".flux path."+d.name)
+        	.style("stroke","#e2e2e2");
+        	d3.selectAll(".netExchanges path."+d.name)
+        	.style("stroke","#e2e2e2");
+        	d3.select(".demand."+d.name)
+        	.attr("marker-end","url(#pointer3)")
+        })
 
         /*flux.append("rect")
         .attr("x",function(e){return e.x-defsiz/2+30})
@@ -826,7 +852,7 @@ function createFluxes() {
 
         flux
         .append("path")
-        .style("stroke", "#f2f2f2")
+        .style("stroke", "#e2e2e2")
         .style("fill","none")
         
         .attr("class",function(d) {return "offer "+d.name})
@@ -836,9 +862,9 @@ function createFluxes() {
 
         flux
         .append("path")
-        .style("stroke", "#f2f2f2")
+        .style("stroke", "#e2e2e2")
         .style("fill","none")
-        .attr("marker-end","url(#pointer2)")
+        .attr("marker-end","url(#pointer3)")
         .attr("class",function(d) {return "demand "+d.name})
         .transition()
         .style("stroke-width", function(d){return d.leDemand})
@@ -846,7 +872,7 @@ function createFluxes() {
 
          flux
         .append("path")
-            .style("stroke", "#f2f2f2")
+            .style("stroke", "#e2e2e2")
             .style("fill","none")
             .attr("class",function(d) {return "selfexchange "+d.name})
             .style("stroke-width", function(d) {return d.leDemand-d.leYeld})
@@ -870,7 +896,7 @@ function createFluxes() {
         going.forEach(function(e){
             exc
             .append("path")
-            .style("stroke", "#f2f2f2")
+            .style("stroke", "#e2e2e2")
             .style("fill","none")
             
             .attr("class",function(d) {return "exchange "+e.source+" "+e.target})
@@ -1017,9 +1043,9 @@ defs.append("svg:marker")
     .attr("d", "M0,-5L10,0L0,5");
 
     defs.append("svg:marker")
-    .attr("id", "pointer2")
+    .attr("id", "pointer3")
     .attr("viewBox", "0 -5 10 10")
-    .style("fill","#f2f2f2")
+    .style("fill","#e2e2e2")
     .attr("refX", 0.2)
     .attr("refY", 0)
     .attr("markerWidth", 1)
@@ -1028,7 +1054,31 @@ defs.append("svg:marker")
   .append("svg:path")
     .attr("d", "M0,-5L10,0L0,5");
 
+    defs.append("svg:marker")
+    .attr("id", "pointer4")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#aaaaaa")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
 
+/*$('.sun').tipsy({
+	gravity: 's', 
+	html: true, 
+	title: function() {
+	 var d = this.__data__;
+	 return '<b>'+d.name+'</b><br/> Reflected solar radiation'; 
+}});
+*/
+var ttip={}
+$('.sun').aToolTip({
+		onShow: function(){ttip = this.__data__;},      
+        tipContent: '<b>'+ttip.name+'</b><br/> Reflected solar radiation'
+    });   
 </script>
 </body>
 </html>
