@@ -9,7 +9,7 @@
   <div ng-controller="FormController" class="example">
   
 
-  <label>Insert Countries</label><br>
+  <label>Insert Spaces</label><br>
   <li ng-repeat="space in spaces">
     <span>{{space.name}}</span><a href="" ng-click="removeSpace(space)"> remove</a>
   </li>
@@ -20,7 +20,7 @@
 
 
 <div style="clear:both;margin-top:10px" ng-repeat="(key, value) in years">
-    <span>Year {{key}}</span><br/>
+    <span>Year {{key}}</span> <a href="" ng-click="remYear(key)"> remove</a><br/>
     <label>Insert Values</label><br>
 
     <div style="float:left" ng-repeat="v in value">
