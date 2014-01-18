@@ -7,6 +7,7 @@ from imrviz import views
 
 urlpatterns = patterns('',
 	url(r'^example$', views.example, name='example'),
+	url(r'^form$', views.form, name='form'),
 	
     # Examples:
     # url(r'^$', 'imr.views.home', name='home'),

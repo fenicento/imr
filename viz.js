@@ -1,450 +1,53 @@
-<html>
-<head>
-	<script src="d3.v3.min.js" charset="utf-8"></script>
-    <script src="jquery-1.10.2.min.js"></script>
-    <!--<script src="javascripts/jquery.tipsy.js"></script>-->
-    <script src="js/d3-bootstrap-plugins.min.js"></script>
-    <!--<script src="jquery.atooltip.min.js"></script>-->
-    <link rel="stylesheet" href="css/d3-bootstrap-plugins.min.css" type="text/css" />
-    <link rel="stylesheet" href="sample-style.css" type="text/css" />
-    <title>REFORME Energy Simulator</title>
-
-	<style>
-	body{font-family: sans-serif;}
-	
-	</style>
-</head>
-<body>
-
- <div id="controls">
-    <div id="years">
-      <div id="years-cont">
-      </div>
-    </div>
-    <div id="buttons">
-      <a class ="but" href="#" onclick="expandAll()">Expand all</a>
-      <a class ="but" href="#" onclick="mergeAll()">Merge all</a>
-    </div>
-  </div>
-<div id="viz">
-</div>
-
-<script>
+//Fixed values
+var svg=null;
 var width=1200;
 var height=1200;
-var svg = d3.select("#viz")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    
-var data={
-    "1750": [
-        {
-            "name": "world",
-            "composite": false,
-            "offer": 900000,
-            "yeld": 0.27,
-            "demand": 2436700,
-            "population": 1000000000,
-            "stock": 4500000,
-            "exchanges": {
-                "europe": 300,
-                "france": 200,
-                "paris": 100,
-                "parc_des_ports": 40
-            }
-        },
-        {
-            "name": "europe",
-            "composite": false,
-            "offer": 100000,
-            "yeld": 0.23,
-            "demand": 620000,
-            "population": 139000000,
-            "stock": 900000,
-            "exchanges": {
-                "world": 120,
-                "france": 100,
-                "paris": 50,
-                "parc_des_ports": 30
-            }
-        },
-        {
-            "name": "france",
-            "composite": false,
-            "offer": 10000,
-            "yeld": 0.23,
-            "demand": 39000,
-            "population": 15000000,
-            "stock": 40000,
-            "exchanges": {
-                "world": 90,
-                "europe": 60,
-                "paris": 50,
-                "parc_des_ports": 10
-            }
-        },
-        {
-            "name": "paris",
-            "composite": false,
-            "offer": 460,
-            "yeld": 0.29,
-            "demand": 2000,
-            "population": 500000,
-            "stock": 2000,
-            "exchanges": {
-                "world": 30,
-                "europe": 40,
-                "france": 10,
-                "parc_des_ports": 8
-            }
-        },
-        {
-            "name": "parc_des_ports",
-            "composite": false,
-            "offer": 90,
-            "yeld": 0.29,
-            "demand": 100,
-            "population": 2000,
-            "stock": 800,
-            "exchanges": {
-                "world": 10,
-                "europe": 8,
-                "france": 4,
-                "paris": 2
-            }
-        }
-    ],
-    "1850": [
-        {
-            "name": "world",
-            "composite": false,
-            "offer": 900000,
-            "yeld": 0.17,
-            "demand": 3436700,
-            "population": 2300000000,
-            "stock": 4500000,
-            "exchanges": {
-                "europe": 300,
-                "france": 200,
-                "paris": 100,
-                "parc_des_ports": 40
-            }
-        },
-        {
-            "name": "europe",
-            "composite": false,
-            "offer": 100000,
-            "yeld": 0.13,
-            "demand": 820000,
-            "population": 439000000,
-            "stock": 900000,
-            "exchanges": {
-                "world": 120,
-                "france": 100,
-                "paris": 50,
-                "parc_des_ports": 30
-            }
-        },
-        {
-            "name": "france",
-            "composite": false,
-            "offer": 10000,
-            "yeld": 0.13,
-            "demand": 79000,
-            "population": 25000000,
-            "stock": 40000,
-            "exchanges": {
-                "world": 90,
-                "europe": 60,
-                "paris": 50,
-                "parc_des_ports": 10
-            }
-        },
-        {
-            "name": "paris",
-            "composite": false,
-            "offer": 460,
-            "yeld": 0.19,
-            "demand": 5000,
-            "population": 700000,
-            "stock": 2000,
-            "exchanges": {
-                "world": 30,
-                "europe": 40,
-                "france": 10,
-                "parc_des_ports": 8
-            }
-        },
-        {
-            "name": "parc_des_ports",
-            "composite": false,
-            "offer": 90,
-            "yeld": 0.19,
-            "demand": 100,
-            "population": 1000,
-            "stock": 800,
-            "exchanges": {
-                "world": 10,
-                "europe": 8,
-                "france": 4,
-                "paris": 2
-            }
-        }
-    ],
-    "1950": [
-        {
-            "name": "world",
-            "composite": false,
-            "offer": 900000,
-            "yeld": 0.09,
-            "demand": 6436700,
-            "population": 5000000000,
-            "stock": 4500000,
-            "exchanges": {
-                "europe": 300,
-                "france": 200,
-                "paris": 100,
-                "parc_des_ports": 40
-            }
-        },
-        {
-            "name": "europe",
-            "composite": false,
-            "offer": 100000,
-            "yeld": 0.06,
-            "demand": 920000,
-            "population": 639000000,
-            "stock": 900000,
-            "exchanges": {
-                "world": 120,
-                "france": 100,
-                "paris": 50,
-                "parc_des_ports": 30
-            }
-        },
-        {
-            "name": "france",
-            "composite": false,
-            "offer": 10000,
-            "yeld": 0.06,
-            "demand": 119000,
-            "population": 35000000,
-            "stock": 40000,
-            "exchanges": {
-                "world": 90,
-                "europe": 60,
-                "paris": 50,
-                "parc_des_ports": 10
-            }
-        },
-        {
-            "name": "paris",
-            "composite": false,
-            "offer": 460,
-            "yeld": 0.12,
-            "demand": 38000,
-            "population": 1500000,
-            "stock": 2000,
-            "exchanges": {
-                "world": 30,
-                "europe": 40,
-                "france": 10,
-                "parc_des_ports": 8
-            }
-        },
-        {
-            "name": "parc_des_ports",
-            "composite": false,
-            "offer": 90,
-            "yeld": 0.12,
-            "demand": 1000,
-            "population": 30000,
-            "stock": 800,
-            "exchanges": {
-                "world": 10,
-                "europe": 8,
-                "france": 4,
-                "paris": 2
-            }
-        }
-    ],
-    "2000": [
-        {
-            "name": "world",
-            "composite": false,
-            "offer": 900000,
-            "yeld": 0.07,
-            "demand": 8436700,
-            "population": 6000000000,
-            "stock": 4500000,
-            "exchanges": {
-                "europe": 300,
-                "france": 200,
-                "paris": 100,
-                "parc_des_ports": 40
-            }
-        },
-        {
-            "name": "europe",
-            "composite": false,
-            "offer": 100000,
-            "yeld": 0.03,
-            "demand": 1120000,
-            "population": 739000000,
-            "stock": 900000,
-            "exchanges": {
-                "world": 120,
-                "france": 100,
-                "paris": 50,
-                "parc_des_ports": 30
-            }
-        },
-        {
-            "name": "france",
-            "composite": false,
-            "offer": 10000,
-            "yeld": 0.03,
-            "demand": 139000,
-            "population": 45000000,
-            "stock": 40000,
-            "exchanges": {
-                "world": 90,
-                "europe": 60,
-                "paris": 50,
-                "parc_des_ports": 10
-            }
-        },
-        {
-            "name": "paris",
-            "composite": false,
-            "offer": 460,
-            "yeld": 0.09,
-            "demand": 48000,
-            "population": 2000000,
-            "stock": 2000,
-            "exchanges": {
-                "world": 30,
-                "europe": 40,
-                "france": 10,
-                "parc_des_ports": 8
-            }
-        },
-        {
-            "name": "parc_des_ports",
-            "composite": false,
-            "offer": 90,
-            "yeld": 0.09,
-            "demand": 3000,
-            "population": 150000,
-            "stock": 800,
-            "exchanges": {
-                "world": 10,
-                "europe": 8,
-                "france": 4,
-                "paris": 2
-            }
-        }
-    ],
-    "2050": [
-        {
-            "name": "world",
-            "composite": false,
-            "offer": 900000,
-            "yeld": 0.17,
-            "demand": 8536700,
-            "population": 9000000000,
-            "stock": 3500000,
-            "exchanges": {
-                "europe": 400,
-                "france": 200,
-                "paris": 300,
-                "parc_des_ports": 70
-            }
-        },
-        {
-            "name": "europe",
-            "composite": false,
-            "offer": 200000,
-            "yeld": 0.13,
-            "demand": 1320000,
-            "population": 839000000,
-            "stock": 700000,
-            "exchanges": {
-                "world": 120,
-                "france": 100,
-                "paris": 50,
-                "parc_des_ports": 30
-            }
-        },
-        {
-            "name": "france",
-            "composite": false,
-            "offer": 10000,
-            "yeld": 0.13,
-            "demand": 169000,
-            "population": 75000000,
-            "stock": 30000,
-            "exchanges": {
-                "world": 90,
-                "europe": 60,
-                "paris": 50,
-                "parc_des_ports": 10
-            }
-        },
-        {
-            "name": "paris",
-            "composite": false,
-            "offer": 460,
-            "yeld": 0.19,
-            "demand": 60000,
-            "population": 4000000,
-            "stock": 1000,
-            "exchanges": {
-                "world": 30,
-                "europe": 40,
-                "france": 10,
-                "parc_des_ports": 8
-            }
-        },
-        {
-            "name": "parc_des_ports",
-            "composite": false,
-            "offer": 90,
-            "yeld": 0.19,
-            "demand": 4800,
-            "population": 190000,
-            "stock": 300,
-            "exchanges": {
-                "world": 10,
-                "europe": 8,
-                "france": 4,
-                "paris": 2
-            }
-        }
-    ]
-};
-
-fillYears();
 var rad=70,
 defsiz=240,
 defy=300,
 year=2000,
 sunx=width/2,
 suny=20;
-var curyear=d3.keys(data)[0];
-$(".y"+curyear).addClass("active");
 
-var currData=JSON.parse(JSON.stringify(data[curyear]));
-
+//Interpolators
 var sunlerp = d3.scale.log().base(2).range([1, 30]);
 var poplerp = d3.scale.linear().range([0.01,6.28]);
 var stocklerp = d3.scale.linear().range([0.1,6.28]);
 var exlerp = d3.scale.linear().range([1,20]);
 var totpop=0;
 var totstock=0;
+
+//exchanges
 var netExchanges=[];
+
+
+function start() {
+
+svg = d3.select("#viz")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+        
+svg
+.append("circle")
+.attr("class","sunball")
+.style("stroke","none")
+.style("fill","#ED653F")
+.attr("r",rad*4/5)
+.attr("cx",width/2-5)
+.attr("cy",suny)
+
+fillYears();
+
+window.curyear=d3.keys(data)[0];
+$(".y"+curyear).addClass("active");
+
+window.currData=JSON.parse(JSON.stringify(data[curyear]));
+
+
+totpop=0;
+totstock=0;
+netExchanges=[];
 
 exc=svg.append("g")
 .attr("class","netexchanges");
@@ -458,7 +61,71 @@ regions=svg.append("g")
 lines=svg.append("g")
 .attr("class","lines");
 
+defs=svg.append("svg:defs")
+    defs.append("svg:marker")
+    .attr("id", "pointer")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#C06446")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
 
+defs.append("svg:marker")
+    .attr("id", "pointer2")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","gray")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+    defs.append("svg:marker")
+    .attr("id", "pointer3")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#e2e2e2")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+    defs.append("svg:marker")
+    .attr("id", "pointer4")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#aaaaaa")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+    defs.append("svg:marker")
+    .attr("id", "pointer5")
+    .attr("viewBox", "0 -5 10 10")
+    .style("fill","#695C4B")
+    .attr("refX", 0.2)
+    .attr("refY", 0)
+    .attr("markerWidth", 1)
+    .attr("markerHeight", 3)
+    .attr("orient", "auto")
+  .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
+
+initialize();
+
+}
 
 function computeSpaces() {
 
@@ -586,7 +253,7 @@ re
 
 re.selectAll("path.yeld")
 .transition()
-.style("stroke-width", function(d){return d.leYeld})
+.style("stroke-width", function(d){return d.leYeld/3})
 .attr("d",function(d) {return createYeldLine(d)});
 
 re.selectAll("path.yeld")
@@ -621,10 +288,12 @@ re
 re.selectAll("line.reflect")
 .transition()
 .style("stroke-width", function(d){return d.leOffer})
-.attr("x1",  function(d){return d.x-d.leOffer/2})
+.attr("x1",  function(d){return d.x+d.leOffer/2})
 .attr("y1",  function(d){return d.y-70+d.leOffer/3})
-.attr("x2",  function(d){return d.x-d.leOffer/2-d.leOffer*2.77})
-.attr("y2",  function(d){return d.y-70+d.leOffer/3-d.leOffer*2.77})
+//.attr("x2",  function(d){return d.x+d.leOffer/2+d.leOffer*2.77})
+.attr("x2",  function(d){return d.x+d.leOffer/2+50})
+//.attr("y2",  function(d){return d.y-70+d.leOffer/3-d.leOffer*2.77})
+.attr("y2",  function(d){return d.y-70+d.leOffer/3-50})
 
 re.selectAll("line.reflect")
 .tooltip(function(d){
@@ -657,10 +326,10 @@ re
 re.selectAll("line.consumption")
 .transition()
 .style("stroke-width",  function(d){return d.leDemand})
-.attr("x1",  function(d){return d.x-d.leDemand*1.5})
+.attr("x1",  function(d){return d.x+d.leDemand*1.5})
 .attr("y1",  function(d){return d.y-70+d.leDemand})
-.attr("x2",  function(d){return d.x-d.leDemand*1.5-d3.min([d.leDemand*2.77,40])})
-.attr("y2",  function(d){return d.y-70+d.leDemand-d3.min([d.leDemand*2.77,40])})
+.attr("x2",  function(d){return d.x+d.leDemand*1.5+40})
+.attr("y2",  function(d){return d.y-70+d.leDemand-40})
 
 re.selectAll("line.consumption")
 .tooltip(function(d){
@@ -765,7 +434,7 @@ re.selectAll("path.surface")
     return {        
       //The text within the tooltip
       type:"tooltip",
-      gravity:"right",
+      gravity:"north",
       text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Population: "+d.population, 
       detection: "shape",
       //Where 
@@ -773,7 +442,7 @@ re.selectAll("path.surface")
       // Base positioning. Not used when placement is "mouse"
       position: [d.x,d.y],
       //How far the tooltip is shifted from the base
-      displacement: [70,-20], //Shifting parts of the graph over.           
+      displacement: [70,-50], //Shifting parts of the graph over.           
       //If "mouse"" is the base poistion, then mousemove true allows
       //the tooltip to move with the mouse
       mousemove: false
@@ -794,7 +463,7 @@ re.selectAll("path.stock")
     return {        
       //The text within the tooltip
       type:"tooltip",
-      gravity:"right",
+      gravity:"north",
       text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Stock: "+d.stock, 
       detection: "shape",
       //Where 
@@ -802,7 +471,7 @@ re.selectAll("path.stock")
       // Base positioning. Not used when placement is "mouse"
       position: [d.x,d.y],
       //How far the tooltip is shifted from the base
-      displacement: [20,-20], //Shifting parts of the graph over.           
+      displacement: [20,-50], //Shifting parts of the graph over.           
       //If "mouse"" is the base poistion, then mousemove true allows
       //the tooltip to move with the mouse
       mousemove: false
@@ -813,7 +482,7 @@ re
 .append("text")
 .attr("class","space-name")
 .attr("text-anchor", "middle")
-.attr("y", 500)
+.attr("y", 558)
 .attr("font-family", "sans-serif")
 .attr("font-size", "14px")
 .attr("fill", "gray");
@@ -826,7 +495,7 @@ re
 .append("text")
 .attr("class","space-pop")
 .attr("text-anchor", "middle")
-.attr("y", 520)
+.attr("y", 578)
 .attr("font-family", "sans-serif")
 .attr("font-size", "14px")
 .attr("fill", "gray");
@@ -839,7 +508,7 @@ re
 .append("text")
 .attr("class","space-stock")
 .attr("text-anchor", "middle")
-.attr("y", 540)
+.attr("y", 598)
 .attr("font-family", "sans-serif")
 .attr("font-size", "14px")
 .attr("fill", "gray");
@@ -859,10 +528,10 @@ createFluxes();
 
 function createSunLine(d) {
       var x0 = sunx+d.leOffer/2*(d.num-(num/2)),
-          x1 = d.x-d.leOffer/2-3,
+          x1 = d.x+d.leOffer/2+3,
           y0 = suny,
           y1 = d.y,
-          yi = d3.interpolateNumber(y0, y1/2),
+          yi = d3.interpolateNumber(y0, y1/3),
           y2 = yi(.5),
           y3 = yi(1 - .5);
           
@@ -876,10 +545,10 @@ function createSunLine(d) {
 
 function createYeldLine(d) {
     	  var x0 = sunx+d.leYeld/2*(d.num-(num/2)),
-          x1 = d.x+d.leYeld/2+3,
+          x1 = d.x-d.leYeld/2-3,
           y0 = suny,
           y1 = d.y,
-          yi = d3.interpolateNumber(y0, y1/2),
+          yi = d3.interpolateNumber(y0, y1/3),
           y2 = yi(.5),
           y3 = yi(1 - .5);
 
@@ -1117,43 +786,43 @@ legend=svg.append("g")
 
 legend.append("line")
 .attr("x1",0)
-.attr("y1",880)
+.attr("y1",920)
 .attr("x2",10)
-.attr("y2",880)
+.attr("y2",920)
 .style("stroke","#2FBAB2")
 .style("stroke-width",2)
 
 legend.append("text")
 .attr("x",15)
-.attr("y",885)
+.attr("y",925)
 .style("fill","#333")
 .text("Population")
 
 legend.append("line")
 .attr("x1",0)
-.attr("y1",895)
+.attr("y1",935)
 .attr("x2",10)
-.attr("y2",895)
+.attr("y2",935)
 .style("stroke","#695C4B")
 .style("stroke-width",2)
 
 legend.append("text")
 .attr("x",15)
-.attr("y",900)
+.attr("y",940)
 .style("fill","#333")
 .text("Demand per person")
 
 legend.append("line")
 .attr("x1",0)
-.attr("y1",910)
+.attr("y1",950)
 .attr("x2",10)
-.attr("y2",910)
+.attr("y2",950)
 .style("stroke","#ED653F")
 .style("stroke-width",2)
 
 legend.append("text")
 .attr("x",15)
-.attr("y",915)
+.attr("y",955)
 .style("fill","#333")
 .text("Solar yield")
 
@@ -1175,9 +844,9 @@ var valueline3 = d3.svg.line()
 
 svg.append("line")
 .attr("x1",0)
-.attr("y1",860)
+.attr("y1",900)
 .attr("x2",width)
-.attr("y2",860)
+.attr("y2",900)
 .style("stroke","gray")
 .style("stroke-width",2);
 
@@ -1188,7 +857,7 @@ d3.selectAll(".region").each(function(d){
 		chart=d3.select(this)
 		.append("g")
 		.attr("class","chart")
-		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+940+")"});
+		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+980+")"});
 
 		maxpop=d3.max(lines[d.name],function(e){return e.population})
 		minpop=d3.min(lines[d.name],function(e){return e.population})
@@ -1255,7 +924,7 @@ function createFluxes() {
         .on("mouseover",function(){
         	d3.selectAll(".flux path."+d.name)
         	.style("stroke","#aaa");
-        	d3.selectAll(".netExchanges path."+d.name)
+        	d3.selectAll(".netexchanges path."+d.name)
         	.style("stroke","#aaa");
         	d3.select(".demand."+d.name)
         	.attr("marker-end","url(#pointer4)")
@@ -1265,7 +934,7 @@ function createFluxes() {
         .on("mouseout",function(){
         	d3.selectAll(".flux path."+d.name)
         	.style("stroke","#e2e2e2");
-        	d3.selectAll(".netExchanges path."+d.name)
+        	d3.selectAll(".netexchanges path."+d.name)
         	.style("stroke","#e2e2e2");
         	d3.select(".demand."+d.name)
         	.attr("marker-end","url(#pointer3)")
@@ -1296,7 +965,7 @@ function createFluxes() {
         
         .attr("class",function(d) {return "offer "+d.name})
         .transition()
-        .style("stroke-width", function(d){return d.leYeld})
+        .style("stroke-width", function(d){return d.leYeld/3})
         .attr("d", function(d) {return createOfferLine(d)});
 
         flux
@@ -1314,15 +983,15 @@ function createFluxes() {
             .style("stroke", "#e2e2e2")
             .style("fill","none")
             .attr("class",function(d) {return "selfexchange "+d.name})
-            .style("stroke-width", function(d) {return d.leDemand-d.leYeld})
+            .style("stroke-width", function(d) {return d.leDemand-d.leYeld/3})
             .style("stroke-linecap","round")
             .attr("d", function(d) {
-                return dirlink3(d.x,710,d.x,620+3*d.leDemand/4,10)});
+                return dirlink3(d.x,750,d.x,660+2.5*d.leDemand/4,10)});
 
 
         flux.append("rect")
         .attr("x",function(e){return e.x-5})
-        .attr("y",620)
+        .attr("y",660)
         .attr("width",10)
         .attr("height", function(d){return d.leDemand})
         .style("fill","gray")
@@ -1345,7 +1014,7 @@ function createFluxes() {
             .attr("d", function() {
                 source=$.grep(currData,function(r){return r.name==e.source})[0]
                 target=$.grep(currData,function(r){return r.name==e.target})[0]
-                return dirlink2(source.x,710,target.x,620+target.leYeld,4)});
+                return dirlink2(source.x,750,target.x,660+target.leYeld,4)});
             h+=e.value;
         })
 
@@ -1356,7 +1025,7 @@ function createFluxes() {
         .style("fill","gray")
         .attr("r",function(d){return sunlerp(d.stock)})
         .attr("cx",function(d){return d.x})
-        .attr("cy",710);
+        .attr("cy",750);
 
         d3.selectAll(".stockCircle")
         .tooltip(function(d){
@@ -1364,7 +1033,7 @@ function createFluxes() {
         return {        
           //The text within the tooltip
           type:"tooltip",
-          gravity:"left",
+          gravity:"north",
           text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Stock", 
           detection: "shape",
           //Where 
@@ -1389,7 +1058,7 @@ function createFluxes() {
         .style("stroke-dasharray", ("3, 3"))
         .attr("r",rad+20)
         .attr("cx",function(d){return d.x})
-        .attr("cy",710);
+        .attr("cy",750);
 
     })
 }
@@ -1431,11 +1100,10 @@ function createFluxes() {
         
         source=$.grep(currData,function(r){return r.name==e.source})[0]
         target=$.grep(currData,function(r){return r.name==e.target})[0]
-        console.log(e,source,target)
         var x0 = source.x-70,
           x1 = target.x-70,
-          y0 = 710+h,
-          y1 = 710+h,
+          y0 = 750+h,
+          y1 = 750+h,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.7);
                    
@@ -1448,8 +1116,8 @@ function createFluxes() {
 
         var x0 = d.x-defsiz/2+30,
           x1 = d.x,
-          y0 = 590,
-          y1 = 620+d.leYeld/2,
+          y0 = 630,
+          y1 = 660+d.leYeld/6,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.5);
                    
@@ -1463,8 +1131,8 @@ function createFluxes() {
 
         var x1 = d.x+defsiz/2-30,
           x0 = d.x,
-          y1 = 590,
-          y0 = 620+d.leDemand/2,
+          y1 = 630,
+          y0 = 660+d.leDemand/2,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.5);
                    
@@ -1474,68 +1142,6 @@ function createFluxes() {
 
     }
 
-
-defs=svg.append("svg:defs")
-    defs.append("svg:marker")
-    .attr("id", "pointer")
-    .attr("viewBox", "0 -5 10 10")
-    .style("fill","#C06446")
-    .attr("refX", 0.2)
-    .attr("refY", 0)
-    .attr("markerWidth", 1)
-    .attr("markerHeight", 3)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-
-defs.append("svg:marker")
-    .attr("id", "pointer2")
-    .attr("viewBox", "0 -5 10 10")
-    .style("fill","gray")
-    .attr("refX", 0.2)
-    .attr("refY", 0)
-    .attr("markerWidth", 1)
-    .attr("markerHeight", 3)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-
-    defs.append("svg:marker")
-    .attr("id", "pointer3")
-    .attr("viewBox", "0 -5 10 10")
-    .style("fill","#e2e2e2")
-    .attr("refX", 0.2)
-    .attr("refY", 0)
-    .attr("markerWidth", 1)
-    .attr("markerHeight", 3)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-
-    defs.append("svg:marker")
-    .attr("id", "pointer4")
-    .attr("viewBox", "0 -5 10 10")
-    .style("fill","#aaaaaa")
-    .attr("refX", 0.2)
-    .attr("refY", 0)
-    .attr("markerWidth", 1)
-    .attr("markerHeight", 3)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-
-    defs.append("svg:marker")
-    .attr("id", "pointer5")
-    .attr("viewBox", "0 -5 10 10")
-    .style("fill","#695C4B")
-    .attr("refX", 0.2)
-    .attr("refY", 0)
-    .attr("markerWidth", 1)
-    .attr("markerHeight", 3)
-    .attr("orient", "auto")
-  .append("svg:path")
-    .attr("d", "M0,-5L10,0L0,5");
-
 /*$('.sun').tipsy({
 	gravity: 's', 
 	html: true, 
@@ -1544,11 +1150,8 @@ defs.append("svg:marker")
 	 return '<b>'+d.name+'</b><br/> Reflected solar radiation'; 
 }});
 */
-// var ttip={}
-// $('.sun').aToolTip({
-// 		onShow: function(){ttip = this.__data__;},      
-//         tipContent: '<b>'+ttip.name+'</b><br/> Reflected solar radiation'
-//     });   
-</script>
-</body>
-</html>
+var ttip={}
+$('.sun').aToolTip({
+		onShow: function(){ttip = this.__data__;},      
+        tipContent: '<b>'+ttip.name+'</b><br/> Reflected solar radiation'
+    });

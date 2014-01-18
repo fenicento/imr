@@ -1,0 +1,60 @@
+body{color:#222;font-family: sans-serif;font-size:12px;line-height:14px;}
+input{
+	border-radius: 3px;
+border: 1px solid #ddd;
+}
+.lab{
+	display: block;
+	clear:	both;
+	font-weight: bold;
+}
+li{
+	list-style: none;
+}
+.year{
+	font-size:15px;
+}
+.entry{
+	margin:8px 0px;	
+}
+h4{
+	margin:10px 0;
+}
+.year-cont{
+	padding:10px;
+	display:inline-block;
+	border:1px solid #bbb;
+	overflow: hidden;
+	width: auto;
+	margin-right:15px;
+	border-radius: 5px;
+	background-color:#f6fbfb;
+}
+.space{
+	margin:0 10px;
+}
+
+a {
+	color:#428bca;
+	text-decoration: none;
+}
+.go{
+	float:right;
+	display: inline-block;
+}
+
+svg{display:block; margin:0 auto;}
+.space-name{font-weight: bold;text-transform: uppercase;}
+#controls{width:1200px; margin:0 auto; clear:both;height:40px; margin-top:20px;}
+#buttons{width:auto; float:right;}
+.but{margin-left:5px;padding:5px 10px; background-color:#f8f8f8;border:1px solid gray;text-decoration: none;color:gray;}
+.active{color:black;font-weight:bold;}
+#years{float:left;}
+.axis path,.axis line {fill: none; stroke: gray; shape-rendering: crispEdges;}
+.axis text {font-family: sans-serif;font-size: 10px;color:gray;}
+.vizspace{display: none;}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

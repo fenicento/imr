@@ -21,5 +21,9 @@ def docs(request):
 
 def example(request):
     
-    return render(request, 'example.html')
+    return render(request, 'newsample.html')
+
+def form(request):
+    
+    return render(request, 'form.html')
 # Create your views here.

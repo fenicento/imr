@@ -1,78 +1,89 @@
 <!doctype html>
 <html ng-app>
   <head>
-    <script src="http://code.angularjs.org/1.2.1/angular.min.js"></script>
+    <script src="angular.min.js"></script>
     <script src="sample-controller.js"></script>
+    <script src="d3.v3.min.js" charset="utf-8"></script>
+    <script src="jquery-1.10.2.min.js"></script>
+    <script src="javascripts/jquery.tipsy.js"></script>
+    <script src="jquery.atooltip.min.js"></script>
+    <script src="d3-bootstrap.min.js"></script>
+    <script src="viz.js"></script>
+    <link rel="stylesheet" href="stylesheets/tipsy.css" type="text/css" />
+    <link rel="stylesheet" href="sample-style.css" type="text/css" />
   </head>
   <body>
-<div ng-app="App">
-  <div ng-controller="FormController" class="example">
   
+<div id="form" ng-app="App">
+  <div ng-controller="FormController" class="example">
 
-  <label>Insert Spaces</label><br>
+<a href="#" class="go but" ng-click="useData()">Use this data</a>
+
+  <h2>Insert Spaces</h2>
   <li ng-repeat="space in spaces">
-    <span>{{space.name}}</span><a href="" ng-click="removeSpace(space)"> remove</a>
+    <div class="entry"><span>{{space.name}}</span><a href="" ng-click="removeSpace(space)"> remove</a></div>
   </li>
   <input type="text" ng-model="spa" required/>
   <a href="" ng-click="addSpace(spa)">add</a>
 
   <br/><br/>
-
-
-<div style="clear:both;margin-top:10px" ng-repeat="(key, value) in years">
-    <span>Year {{key}}</span> <a href="" ng-click="remYear(key)"> remove</a><br/>
-    <label>Insert Values</label><br>
-
-    <div style="float:left" ng-repeat="v in value">
-    <span>Name: </span><input type="text" ng-model="v.name" required/><br/>
-    <span>Population: </span><input type="text" ng-model="v.population" required/><br/>
-    <span>Stock: </span><input type="text" ng-model="v.stock" required/><br/>
-    <span>Offer: </span><input type="text" ng-model="v.offer" required/><br/>
-    <span>Demand: </span><input type="text" ng-model="v.demand" required/><br/>
-  </div>
-  
-</div>
-<br/>
 <div style="margin-top:10px;clear:both">
-<label>Add Year</label><br/>
+<h2>Add Year</h2>
 <input type="text" ng-model="year" required/>
   <a href="" ng-click="addYear(year)">add</a>
 </div>
+
+<span class="year-cont" style="clear:both;margin-top:10px" ng-repeat="(key, value) in years">
+
+    <span class="year">Year {{key}}</span> <a href="" ng-click="remYear(key)"> remove</a><br/>
+    <h4>Insert Values</h4>
+
+    <div class="space" style="float:left" ng-repeat="v in value">
+    <div class="entry"><span class="lab">Name: </span><input type="text" ng-model="v.name" required/></div>
+    <div class="entry"><span class="lab">Population: </span><input type="number" ng-model="v.population" required/></div>
+    <div class="entry"><span class="lab">Surface: </span><input type="number" ng-model="v.surface" required/></div>
+    <div class="entry"><span class="lab">Stock: </span><input type="number" ng-model="v.stock" required/></div>
+    <div class="entry"><span class="lab">Offer: </span><input type="number" ng-model="v.offer" required/></div>
+    <div class="entry"><span class="lab">Yeld: </span><input type="number" ng-model="v.yeld" required/></div>
+    <div class="entry"><span class="lab">Demand: </span><input type="number" ng-model="v.demand" required/></div>
+    <h4>Exchanges</h4>
+    <div ng-repeat="(k, exvalue) in v.exchanges">
+      <span class="lab">{{k}}: </span><input type="number" ng-model="v.exchanges[k]" required/><br/>
+    </div>
+  </div>
+  
+</span>
+<br/>
+
 
 <div style="clear:both; margin-top:10px;">
 Debug View:
     <pre>years={{years | json}}</pre>
     <pre>spaces={{spaces | json}}</pre>
-
-
-
-    <!-- <label>Name:</label><br>
-    <input type="text" ng-model="space.name" required/> <br><br>
-  
-    <label>Address:</label><br>
-    <input type="text" ng-model="user.address.line1" size="33" required> <br>
-    <input type="text" ng-model="user.address.city" size="12" required>,
-    <input type="text" ng-model="user.address.state"
-           ng-pattern="state" size="2" required>
-    <input type="text" ng-model="user.address.zip" size="5"
-           ng-pattern="zip" required><br><br>
-  
-    <label>Phone:</label>
-    [ <a href="" ng-click="addContact()">add</a> ]
-    <div ng-repeat="contact in user.contacts">
-      <select ng-model="contact.type">
-        <option>email</option>
-        <option>phone</option>
-        <option>pager</option>
-        <option>IM</option>
-      </select>
-      <input type="text" ng-model="contact.value" required>
-       [ <a href="" ng-click="removeContact(contact)">X</a> ]
-    </div>
-    <hr/>
-    Debug View:
-    <pre>user={{user | json}}</pre> -->
   </div>
+
+  <script>
+  var data = null;
+  </script>
+
+
 </div>
+</div>
+<div class="vizspace">
+  <div id="controls">
+    <div id="years">
+      <div id="years-cont">
+      </div>
+    </div>
+    <div id="buttons">
+      <a class ="but" href="#" onclick="expandAll()">Expand all</a>
+      <a class ="but" href="#" onclick="mergeAll()">Merge all</a>
+    </div>
+  </div>
+<div id="viz">
+</div>
+
+</div>
+
 </body>
 </html>

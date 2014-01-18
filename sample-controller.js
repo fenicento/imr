@@ -16,6 +16,7 @@ $scope.years={}
 
      $scope.spaces.push({"name":i,
       "population":"",
+      "surface":"",
       "stock":"",
       "yeld":"",
       "demand":"",
@@ -36,6 +37,7 @@ $scope.years={}
      if (a.length==0) value.push(
       {"name":i,
       "population":"",
+      "surface":"",
       "stock":"",
       "yeld":"",
       "demand":"",
@@ -45,10 +47,7 @@ $scope.years={}
       value.forEach(function(v){
         if(v.name!=i && !v.exchanges[i]) v.exchanges[i]="";  
       })
-      
-
      })
-     
   };
 
 
@@ -90,10 +89,14 @@ $scope.years={}
       console.log(value[it]);
         delete(value[it].exchanges[sp.name])
      }
-
-
      })
-
-
   };
+
+  $scope.useData=function() {
+    data=$scope.years;
+    $("#form").hide();
+    $(".vizspace").show();
+    start();
+    //$scope.$apply();
+  }
 }
