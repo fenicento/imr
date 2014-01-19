@@ -21,7 +21,7 @@ def docs(request):
 
 def example(request):
     
-    return render(request, 'newsample.html')
+    return render(request, 'samplev2.html')
 
 def form(request):
     
