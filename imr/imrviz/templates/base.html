@@ -14,8 +14,9 @@
 <link rel="stylesheet" type="text/css" href="{% static "imr/css/style.css" %}" />
 <link rel="stylesheet" href="{% static "imr/css/sample-style.css" %}" type="text/css" />
 <link rel="stylesheet" href="{% static "imr/css/d3-bootstrap-plugins.min.css" %}" type="text/css" />
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,900' rel='stylesheet' type='text/css'>
 
-<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">
       <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -44,7 +45,7 @@
 
     
     
-        {% block title %}(no title){% endblock %}
+       <h1 class="center"> {% block title %}(no title){% endblock %}</h1>
 
       
 
@@ -58,6 +59,14 @@
 </div>
 <div id="footer">
   <div class="container">
+  	<div id="team">
+  		<a href="http://www.densitydesign.org"><img src="{% static "imr/img/dd.png" %}"/></a>
+    <a href="http://www.egis.fr/"><img src="{% static "imr/img/egis.png" %}"/></a>
+    <a href="http://www.paris-malaquais.archi.fr"><img src="{% static "imr/img/mlq.png" %}"/></a>
+    <a href="http://www.paris-belleville.archi.fr/"><img src="{% static "imr/img/blv.png" %}"/></a>
+  		
+  	</div>
+  	
     <div id="logos">
     <a href="http://www.culturecommunication.gouv.fr/"><img src="{% static "imr/img/THU_cultcomm.jpg" %}"/></a>
     <a href="http://www.developpement-durable.gouv.fr/"><img src="{% static "imr/img/THU_mineco.jpg" %}"/></a>

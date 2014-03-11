@@ -5,10 +5,12 @@ from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 import imrviz
 
+
 admin.autodiscover()
 
 
 urlpatterns = patterns('',
+	url(r'^mongonaut/', include('mongonaut.urls')),
 	url(r'^viz/', include('imrviz.urls')),
 	url(r'^$', imrviz.views.index, name='index'),
 	url(r'^about/',imrviz.views.about, name='about'),

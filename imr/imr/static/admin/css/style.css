@@ -19,3 +19,8 @@ background-color:#FFF;
 .module h2, .module caption, .inline-group h2 {
 	background:#222;
 }
+#team.img{
+	max-width:100px;
+	height:auto;
+	margin-right:5px;
+}

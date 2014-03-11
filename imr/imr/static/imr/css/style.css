@@ -3,15 +3,22 @@ html, body{
 }
 
 body, h1, h2,h3,h4,p{
-	font-family:'Open Sans', sans-serif !important;
+	font-family:'Lato', sans-serif !important;
+	font-size:1.4em;
+	line-height:1.6em;
 }
 
 h1,h2,h3,h4 {
 	font-weight: bold;
 }
 
+h1{
+	font-size:3em;
+	
+}
+
 #push,#footer {
-height: 100px;
+height: 120px;
 }
 
 #wrap{
@@ -199,5 +206,33 @@ div.tooltip {
   pointer-events: none;
   margin-top:20px;
 }
+
+#viz {
+	margin-bottom:70px;
+}
+
 /* END VIZ */
 
+#team{
+	float:left;
+}
+#team img{
+	max-width:100px;
+	height:auto;
+	margin-right:5px;
+}
+#footer{
+	background:#eee;
+	border-top:3px solid #ccc;
+	padding-top:10px;
+	
+}
+
+.navbar{
+	font-size:1.5em;
+}
+
+.navbar a:hover{
+	color:#000;
+	font-weight:bold;
+}
