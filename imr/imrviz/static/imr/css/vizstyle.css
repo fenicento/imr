@@ -100,9 +100,10 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 	margin: 0;
 }
 body {
-	background: #fff;
+	background: #fefefe;
 }
-h2 {
+h2, .title {
 	color: #808080;
+	fill: #808080;
 	font-size: 2em;
 }

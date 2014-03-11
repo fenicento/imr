@@ -91,7 +91,7 @@ var surflerp = d3.scale.linear().range([0.01,6.28]);
 var stocklerp = d3.scale.linear().range([0.01,6.28]);
 var stockfilllerp = d3.scale.linear().range([20,5]);
 var exlerp = d3.scale.linear().range([1,20]);
-var poplerp = d3.scale.linear().range([5,20]);
+var poplerp = d3.scale.linear().range([5,19]);
 var totpop=0;
 var totstock=0;
 var netExchanges=[];
@@ -347,7 +347,7 @@ arc2 = d3.svg.arc()
 //CREATE PIES
 re.append("path")
 .attr("class",function(d) {return "surface "+d.name})
-.style("fill","#2FBAB2");
+.style("fill","#8bba83");
 
 re.selectAll("path.surface")
 .attr("d", arc)
@@ -407,7 +407,7 @@ re
 .append("text")
 .attr("class","space-name")
 .attr("text-anchor", "middle")
-.attr("y", 558)
+.attr("y", 508)
 .attr("font-family", "Lato")
 .attr("font-size", "14px")
 .attr("fill", "gray");
@@ -420,7 +420,7 @@ re
 .append("text")
 .attr("class","space-pop")
 .attr("text-anchor", "middle")
-.attr("y", 578)
+.attr("y", 528)
 .attr("font-family", "Lato")
 .attr("font-size", "14px")
 .attr("fill", "gray");
@@ -433,10 +433,16 @@ re
 .append("text")
 .attr("class","space-stock")
 .attr("text-anchor", "middle")
-.attr("y", 598)
+.attr("y", 548)
 .attr("font-family", "Lato")
 .attr("font-size", "14px")
 .attr("fill", "gray");
+
+re
+.append("text")
+.attr("class","title")
+.attr("y", 638)
+.text("Ins and outs")
 
 d3.selectAll("text.space-stock")
 .attr("x", function(d) { return d.x })
@@ -718,7 +724,7 @@ legend.append("line")
 .attr("y1",920)
 .attr("x2",10)
 .attr("y2",920)
-.style("stroke","#2FBAB2")
+.style("stroke","#8bba83")
 .style("stroke-width",2)
 
 legend.append("text")
@@ -807,7 +813,7 @@ d3.selectAll(".region").each(function(d){
 
 		chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
-        .style("stroke","#2FBAB2")
+        .style("stroke","#8bba83")
         .style("stroke-width",2)
         .style("fill","none")
         .attr("d", valueline1(lines[d.name]))
