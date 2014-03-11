@@ -214,7 +214,5 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
-
-imr/
 imr_env_win/
 imr_env

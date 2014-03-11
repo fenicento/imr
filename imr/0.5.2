@@ -1,0 +1,19 @@
+Exception:
+Traceback (most recent call last):
+  File "C:\Users\Cento\Documents\GitHub\imr\imr_env_win\lib\site-packages\pip-1.3.1-py2.7.egg\pip\basecommand.py", line 139, in main
+    status = self.run(options, args)
+  File "C:\Users\Cento\Documents\GitHub\imr\imr_env_win\lib\site-packages\pip-1.3.1-py2.7.egg\pip\commands\install.py", line 235, in run
+    InstallRequirement.from_line(name, None))
+  File "C:\Users\Cento\Documents\GitHub\imr\imr_env_win\lib\site-packages\pip-1.3.1-py2.7.egg\pip\req.py", line 118, in from_line
+    return cls(req, comes_from, url=url)
+  File "C:\Users\Cento\Documents\GitHub\imr\imr_env_win\lib\site-packages\pip-1.3.1-py2.7.egg\pip\req.py", line 43, in __init__
+    req = pkg_resources.Requirement.parse(req)
+  File "C:\Users\Cento\Documents\GitHub\imr\imr_env_win\lib\site-packages\setuptools-0.6c11-py2.7.egg\pkg_resources.py", line 2510, in parse
+    reqs = list(parse_requirements(s))
+  File "C:\Users\Cento\Documents\GitHub\imr\imr_env_win\lib\site-packages\setuptools-0.6c11-py2.7.egg\pkg_resources.py", line 2436, in parse_requirements
+    line, p, specs = scan_list(VERSION,LINE_END,line,p,(1,2),"version spec")
+  File "C:\Users\Cento\Documents\GitHub\imr\imr_env_win\lib\site-packages\setuptools-0.6c11-py2.7.egg\pkg_resources.py", line 2404, in scan_list
+    raise ValueError("Expected "+item_name+" in",line,"at",line[p:])
+ValueError: ('Expected version spec in', 'mongoengine=', 'at', '=')
+
+Storing complete log in C:\Users\Cento\pip\pip.log

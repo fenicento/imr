@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}<h1 class="center"><b>REFORME</b> / THE GLOBAL ENERGY SIMULATOR</h1>{% endblock %}
+
+{% block content %}
+	
+	{% load staticfiles %}
+	 <script src="{% static "imr/js/jquery.js" %}"></script>
+    <script src="{% static "imr/js/jquery-ui-1.8.24.custom.min.js" %}"></script>
+    <!--<script src="{% static "imr/js/d3.v2.min.js" %}"></script>-->
+    <script src="{% static "imr/js/d3.v3.min.js" %}"></script>
+    <script src="{% static "imr/js/d3-bootstrap-plugins.min.js" %}"></script>
+    <script src="{% static "imr/js/angular.min.js" %}"></script>
+    <script src="{% static "imr/js/sample-controller.js" %}"></script>
+    <script src="{% static "imr/js/viz.js" %}"></script>
+    <style>
+    	body{color:#222;font-family: sans-serif;font-size:12px;line-height:14px;}
+input{
+	border-radius: 3px;
+border: 1px solid #ddd;
+}
+.lab{
+	display: block;
+	clear:	both;
+	font-weight: bold;
+}
+li{
+	list-style: none;
+}
+.year{
+	font-size:15px;
+}
+.entry{
+	margin:8px 0px;	
+}
+h4{
+	margin:10px 0;
+}
+.year-cont{
+	padding:10px;
+	display:inline-block;
+	border:1px solid #bbb;
+	overflow: hidden;
+	width: auto;
+	margin-right:15px;
+	border-radius: 5px;
+	background-color:#f6fbfb;
+}
+.space{
+	margin:0 10px;
+}
+
+a {
+	color:#428bca;
+	text-decoration: none;
+}
+.go{
+	float:right;
+	display: inline-block;
+}
+
+svg{display:block; margin:0 auto;}
+.space-name{font-weight: bold;text-transform: uppercase;}
+#controls{width:1200px; margin:0 auto; clear:both;height:40px; margin-top:20px;}
+#buttons{width:auto; float:right;}
+.but{margin-left:5px;padding:5px 10px; background-color:#f8f8f8;border:1px solid gray;text-decoration: none;color:gray;}
+.active{color:black;font-weight:bold;}
+#years{float:left;}
+.axis path,.axis line {fill: none; stroke: gray; shape-rendering: crispEdges;}
+.axis text {font-family: sans-serif;font-size: 10px;color:gray;}
+.vizspace{display: none;}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+    </style>
+    {% verbatim %}
+    
+
+	
+	<br/>
+	  <div ng-app>
+	  	
+		<div id="form" ng-app="App">
+			  <div ng-controller="FormController" class="example">
+			
+			<a href="#" class="go but" ng-click="useData()">Use this data</a>
+			
+			  <h2>Insert Spaces</h2>
+			  <li ng-repeat="space in spaces">
+			    <div class="entry"><span>{{space.name}}</span><a href="" ng-click="removeSpace(space)"> remove</a></div>
+			  </li>
+			  <input type="text" ng-model="spa" required/>
+			  <a href="" ng-click="addSpace(spa)">add</a>
+			
+			  <br/><br/>
+			<div style="margin-top:10px;clear:both">
+			<h2>Add Year</h2>
+			<input type="text" ng-model="year" required/>
+			  <a href="" ng-click="addYear(year)">add</a>
+			</div>
+			
+			<span class="year-cont" style="clear:both;margin-top:10px" ng-repeat="(key, value) in years">
+			
+			    <span class="year">Year {{key}}</span> <a href="" ng-click="remYear(key)"> remove</a><br/>
+			    <h4>Insert Values</h4>
+			
+			    <div class="space" style="float:left" ng-repeat="v in value">
+			    <div class="entry"><span class="lab">Name: </span><input type="text" ng-model="v.name" required/></div>
+			    <div class="entry"><span class="lab">Population: </span><input type="number" ng-model="v.population" required/></div>
+			    <div class="entry"><span class="lab">Surface: </span><input type="number" ng-model="v.surface" required/></div>
+			    <div class="entry"><span class="lab">Stock: </span><input type="number" ng-model="v.stock" required/></div>
+			    <div class="entry"><span class="lab">Offer: </span><input type="number" ng-model="v.offer" required/></div>
+			    <div class="entry"><span class="lab">Yeld: </span><input type="number" ng-model="v.yeld" required/></div>
+			    <div class="entry"><span class="lab">Demand: </span><input type="number" ng-model="v.demand" required/></div>
+			    <h4>Exchanges</h4>
+			    <div ng-repeat="(k, exvalue) in v.exchanges">
+			      <span class="lab">{{k}}: </span><input type="number" ng-model="v.exchanges[k]" required/><br/>
+			    </div>
+			  </div>
+			  
+			</span>
+			<br/>
+			
+			
+			  <script>
+			  var data = null;
+			  </script>
+			
+			
+			</div>
+			</div>
+			<div class="vizspace">
+			  <div id="controls">
+			    <div id="years">
+			      <div id="years-cont">
+			      </div>
+			    </div>
+			    <div id="buttons">
+			      <a class ="but" href="#" onclick="expandAll()">Expand all</a>
+			      <a class ="but" href="#" onclick="mergeAll()">Merge all</a>
+			    </div>
+			  </div>
+			<div id="viz">
+			</div>
+			
+			</div>
+	  	
+	  	
+	  	
+	  	
+	  	</div>
+{% endverbatim %}		  
+
+    {% endblock %}
