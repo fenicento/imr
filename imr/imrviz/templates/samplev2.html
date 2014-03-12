@@ -23,11 +23,13 @@
     <div id="buttons">
       <a class ="but" href="#" onclick="expandAll()">Expand all</a>
       <a class ="but" href="#" onclick="mergeAll()">Merge all</a>
+      <a  class ="but" href="#" onclick="showLegend()">Show legend</a>
     </div>
   </div>
   <div id="title">
-  	<h2>Energy flows between spaces</h2>
+  	<h2>Energy flows between spaces</h2> <img style="display:none" class="legend-img" src="{% static "imr/img/legend.png" %}" />
   </div>
+ 
 <div id="viz">
 </div>
 
@@ -49,6 +51,10 @@ merged = merged.concat.apply(merged, a);
 var nested_data = d3.nest()
 .key(function(d) { return d.name; })
 .entries(merged);
+
+var chartstocklerp = d3.scale.linear().range([0,80]);
+var stocks;
+computeAllStocks();
 
 function findPopulationBounds(s) {
 	
@@ -93,6 +99,7 @@ var stocklerp = d3.scale.linear().range([0.01,6.28]);
 var stockfilllerp = d3.scale.linear().range([20,5]);
 var exlerp = d3.scale.linear().range([1,20]);
 var poplerp = d3.scale.linear().range([5,19]);
+
 var totpop=0;
 var totstock=0;
 var netExchanges=[];
@@ -100,7 +107,7 @@ var suncolor='#f7a95b'
 var excolor='#a84940'
 var conscolor='#95A1A5'
 var popcolor = '#789c72'
-var sunfill = "#F7E6C4"
+var sunfill = "#ffffff"
 
 exc=svg.append("g")
 .attr("class","netexchanges");
@@ -787,7 +794,15 @@ initialize()
 function createCharts() {
 
 
-charty=900
+
+charty=940
+
+svg
+	.append("text")
+	.attr("class","title gen-text")
+	.attr("y", charty+40)
+	.text("Trends")
+
 
 //Data by countries
 var years=d3.map(data).keys()
@@ -818,6 +833,7 @@ years.forEach(function(year) {
 //LEGEND
 legend=svg.append("g")
 .attr("class","legend")
+.attr("transform","translate("+(width-150)+",5)")
 
 legend.append("line")
 .attr("x1",0)
@@ -883,7 +899,7 @@ svg.append("line")
 .attr("x2",width)
 .attr("y2",charty)
 .style("stroke","gray")
-.style("stroke-width",2);
+.style("stroke-width",0.5);
 
 
 d3.selectAll(".region").each(function(d){
@@ -892,7 +908,7 @@ d3.selectAll(".region").each(function(d){
 		chart=d3.select(this)
 		.append("g")
 		.attr("class","chart")
-		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+(charty+80)+")"});
+		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+(charty+90)+")"});
 
 		maxpop=d3.max(lines[d.name],function(e){return e.population})
 		minpop=d3.min(lines[d.name],function(e){return e.population})
@@ -948,7 +964,16 @@ d3.selectAll(".region").each(function(d){
 
 function createSections() {
 	
-	secy = 730;
+	secy = 750;
+	
+	svg.append("line")
+	.attr("x1",0)
+	.attr("y1",secy-100)
+	.attr("x2",width)
+	.attr("y2",secy-100)
+	.style("stroke","gray")
+	.style("stroke-width",0.5);
+
 	
 	svg
 	.append("text")
@@ -1018,7 +1043,18 @@ function createSections() {
    .attr('x',function(d){return d.x-75})
    .attr('y',secy+82)
     .attr("width", 150)
-    .attr("height", 30)
+    .attr("height", 80)
+    .style("fill", "#ededed");
+   
+   
+   flux.append("rect")
+   .attr('x',function(d){return d.x-75})
+   .attr('y',secy+82)
+    .attr("width", 150)
+    .attr("height", function(d){
+    	a=stocks.filter(function(e){return e.name==d.name})[0]
+    	chartstocklerp.domain([0, a.maxstock])
+    	return chartstocklerp(d.stock)})
     .style("fill", "url(#gradient)");
     
     
@@ -1071,12 +1107,7 @@ function createSections() {
 			p5=(d.x-defsiz/2.3+0.5)+","+(secy+80+totVal)
 				
 			return "M"+p1+"L"+p2+"L"+p3+"L"+p4+"L"+p5+"Z"})    
-	    	
-		
-			
-			
-			
-		
+
 		totVal=0;
 		
 		d.outs.forEach(function(c,i) {
@@ -1106,8 +1137,6 @@ function createSections() {
 		p3=(d.x+defsiz/2.3-0.5)+","+(secy+80+totVal)
 			
 		return "M"+p1+"L"+p2+"L"+p3+"Z"})    
-    
-    
       })
 	
 	}
@@ -1283,6 +1312,24 @@ gradient.append("svg:stop")
     .attr("offset", "100%")
     .attr("stop-color", "#999999")
     .attr("stop-opacity", 1);
+    
+    function computeAllStocks() {
+    	stocks=[]	
+    	
+    	nested_data.forEach(function(d,i) {
+    		m=d3.max(d.values,function(e){return e.stock})
+    		stocks.push({name:d.key,maxstock:m})
+    	})
+    	
+    	totmax = d3.max(stocks, function(f){return f.maxstock})
+    	totmin = d3.min(stocks, function(f){return f.maxstock})
+    	
+    	
+    }
+    
+    function showLegend() {
+    	$(".legend-img").fadeToggle(200);
+    }
 
 </script>
 	  
