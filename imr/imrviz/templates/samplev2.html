@@ -9,11 +9,9 @@
 	<link rel="stylesheet" href="{% static "imr/css/vizstyle.css" %}"/>
 	<script src="{% static "imr/js/jquery.js" %}"></script>
     <script src="{% static "imr/js/jquery-ui-1.8.24.custom.min.js" %}"></script>
-    <!--<script src="{% static "imr/js/d3.v2.min.js" %}"></script>-->
     <script src="{% static "imr/js/d3.v3.min.js" %}"></script>
     <script src="{% static "imr/js/d3-bootstrap-plugins.min.js" %}"></script>
     <script src="{% static "imr/js/data.js" %}"></script>
-    <!--<script src="{% static "imr/js/ignis.js" %}"></script>-->
     
 	<br/>
 	
@@ -75,12 +73,15 @@ function findStockBounds(s) {
 //findPopulationBounds("world");
 
 fillYears();
-var rad=84,
+var rad=100,
 defsiz=240,
 defy=290,
 year=2000,
-sunx=width/2,
-suny=60;
+sunx=consx=width/2,
+suny=62;
+consy=600;
+charty=700;
+
 var curyear=d3.keys(data)[0];
 $(".y"+curyear).addClass("active");
 
@@ -95,15 +96,22 @@ var poplerp = d3.scale.linear().range([5,19]);
 var totpop=0;
 var totstock=0;
 var netExchanges=[];
+var suncolor='#f7a95b'
+var excolor='#a84940'
+var conscolor='#95A1A5'
+var popcolor = '#789c72'
+var sunfill = "#F7E6C4"
 
 exc=svg.append("g")
 .attr("class","netexchanges");
 
-exchanges=svg.append("g")
-.attr("class","exchanges");
 
 regions=svg.append("g")
 .attr("class","regions");
+
+exchanges=svg.append("g")
+.attr("class","exchanges");
+
 
 lines=svg.append("g")
 .attr("class","lines");
@@ -111,9 +119,9 @@ lines=svg.append("g")
 svg
 .append("circle")
 .attr("class","sunball")
-.style("stroke","#ED653F")
+.style("stroke",suncolor)
 .style("stroke-width","3")
-.style("fill","#ffffff")
+.style("fill",sunfill)
 .style("stroke-dasharray",("5 3"))
 .attr("r",rad*3/5)
 .attr("cx",width/2-5)
@@ -186,7 +194,9 @@ d3.selectAll(".exchange").remove();
 d3.selectAll(".divline").remove();
 d3.selectAll(".chart").remove();
 d3.selectAll(".section").remove();
+d3.selectAll(".gen-text").remove();
 d3.selectAll(".netexchanges").empty();
+d3.selectAll(".legend").remove();
 
 netExchanges=[];
 
@@ -222,7 +232,7 @@ li.enter()
 
 re
 .append("path")
-.style("stroke", "#ED653F")
+.style("stroke", suncolor)
 .attr("fill","none")
 .attr("class",function(d) {return "yeld "+d.name});
 
@@ -253,10 +263,10 @@ re.selectAll("path.yeld")
 });
 
 //CREATE CONSUMPTION LINE
-re
+/*re
 .append("line")
 .attr("class",function(d) {return "consumption "+d.name})
-.style("stroke", "#695C4B")
+.style("stroke", conscolor)
 .attr("marker-end","url(#pointer5)");
 
 re.selectAll("line.consumption")
@@ -268,6 +278,39 @@ re.selectAll("line.consumption")
 .attr("y2",  function(d){return d.y-70+d.leDemand-40})
 
 re.selectAll("line.consumption")
+.tooltip(function(d){
+    console.log(d.x,d.y);
+    return {        
+      //The text within the tooltip
+      type:"tooltip",
+      gravity:"north",
+      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of demand", 
+      detection: "shape",
+      //Where 
+      placement: "fixed",
+      // Base positioning. Not used when placement is "mouse"
+      position: [d.x,d.y-270],
+      //How far the tooltip is shifted from the base
+      displacement: [-75,0], //Shifting parts of the graph over.           
+      //If "mouse"" is the base poistion, then mousemove true allows
+      //the tooltip to move with the mouse
+      mousemove: false
+    };
+});*/
+
+re
+.append("path")
+.style("stroke", conscolor)
+.attr("fill","none")
+.attr("class",function(d) {return "consumption "+d.name});
+
+re.selectAll("path.consumption")
+.transition()
+.style("stroke-width", function(d){return d.leDemand})
+
+.attr("d",function(d) {return createConsLine(d)});
+
+re.selectAll("path.consumption")
 .tooltip(function(d){
     console.log(d.x,d.y);
     return {        
@@ -322,9 +365,10 @@ re.selectAll("circle.item")
 
 re.append("circle")
 .attr("class",function(d) {return "popline "+d.name})
-.style("stroke","#eee")
+.style("stroke",popcolor)
 .style("stroke-width","0.5")
 .style("fill","none")
+.style("opacity",0.5)
 .attr("r",rad*3/4);
 
 re.selectAll("circle.popline")
@@ -332,22 +376,49 @@ re.selectAll("circle.popline")
 .attr("cx",function(d){return d.x})
 .attr("cy",function(d){return d.y});
 
+re.append("circle")
+.attr("class",function(d) {return "stockline "+d.name})
+.style("stroke","gray")
+.style("stroke-width","0.5")
+.style("fill","none")
+.style("opacity",0.5)
+.attr("r",rad*2/4);
+
+re.selectAll("circle.stockline")
+.transition()
+.attr("cx",function(d){return d.x})
+.attr("cy",function(d){return d.y});
+
 arc = d3.svg.arc()
 .innerRadius(rad*3/4)
 .outerRadius(function(d){return rad*3/4+d.comp_pop})
-.startAngle(function(d){return -surflerp(d.surface)/2-Math.PI/2})
-.endAngle(function(d){return surflerp(d.surface)/2-Math.PI/2});
+.startAngle(function(d){
+	if(d.name==="world") return (-surflerp(d.surface)/2-Math.PI/2); 
+	else return (-surflerp(d.surface)/2+Math.PI/2)
+	})
+.endAngle(function(d){
+	if(d.name==="world") return (surflerp(d.surface)/2-Math.PI/2); 
+	else return (surflerp(d.surface)/2+Math.PI/2)
+	});
+
 
 arc2 = d3.svg.arc()
-.innerRadius(function(d){return rad*3/4-d.comp_stock})
-.outerRadius(rad*3/4-1)
-.startAngle(function(d){return -stocklerp(d.stock)/2-Math.PI/2})
-.endAngle(function(d){return stocklerp(d.stock)/2-Math.PI/2});
+.outerRadius(function(d){return rad*2/4+d.comp_stock})
+.innerRadius(rad*2/4-1)
+.startAngle(function(d){
+	if(d.name==="world") return -stocklerp(d.stock)/2-Math.PI/2; 
+	else return -stocklerp(d.stock)/2+Math.PI/2;
+	})
+.endAngle(function(d){
+	if(d.name==="world") return stocklerp(d.stock)/2-Math.PI/2; 
+	else return stocklerp(d.stock)/2+Math.PI/2;
+	});
+
 	    
 //CREATE PIES
 re.append("path")
 .attr("class",function(d) {return "surface "+d.name})
-.style("fill","#8bba83");
+.style("fill",popcolor);
 
 re.selectAll("path.surface")
 .attr("d", arc)
@@ -407,22 +478,22 @@ re
 .append("text")
 .attr("class","space-name")
 .attr("text-anchor", "middle")
-.attr("y", 508)
+.attr("y", function(d){return d.y-10})
 .attr("font-family", "Lato")
-.attr("font-size", "14px")
+.attr("font-size", "10px")
 .attr("fill", "gray");
 
 d3.selectAll("text.space-name")
 .attr("x", function(d) { return d.x })
-.text( function (d) { return d.name.replace("_"," ")})
+.text( function (d) { return d.name.replace(/_/g," ")})
 
 re
 .append("text")
 .attr("class","space-pop")
 .attr("text-anchor", "middle")
-.attr("y", 528)
+.attr("y", function(d){return d.y+5})
 .attr("font-family", "Lato")
-.attr("font-size", "14px")
+.attr("font-size", "10px")
 .attr("fill", "gray");
 
 d3.selectAll("text.space-pop")
@@ -433,22 +504,26 @@ re
 .append("text")
 .attr("class","space-stock")
 .attr("text-anchor", "middle")
-.attr("y", 548)
+.attr("y",function(d){return d.y+20})
 .attr("font-family", "Lato")
-.attr("font-size", "14px")
+.attr("font-size", "10px")
 .attr("fill", "gray");
-
-re
-.append("text")
-.attr("class","title")
-.attr("y", 638)
-.text("Ins and outs")
 
 d3.selectAll("text.space-stock")
 .attr("x", function(d) { return d.x })
 .text( function (d) { return ((d.stock/totstock)*100).toFixed(2)+"% stock"})
 
 re.exit().remove()
+
+svg.append("text")
+.attr("x",width/2)
+.attr("y", consy+20)
+.attr("text-anchor", "middle")
+.style("fill","gray")
+.attr("class","gen-text")
+.attr("font-family", "Lato")
+.attr("font-size", "12px")
+.text("Global consumption")
 
 createCharts();
 createSections();
@@ -491,6 +566,29 @@ function createYeldLine(d) {
            + "L" + x1 + "," + y1; 	
 
     }
+    
+function createConsLine(d) {
+		var x0;
+		 if(d.num<num) x0 = consx+d.leDemand/2*(d.num-(num/2.5))
+		 else if(d.num<num) x0 = consx+d.leDemand/2*(d.num-(num/2.5))
+		 else x0 = consx;
+          var  x1= d.x,
+         
+          y1 = d.y+100,
+          y0 = consy,
+          xi = d3.interpolateNumber(x0, x1/2),
+          yi = d3.interpolateNumber(y0, y1),
+          y2 = yi(.5),
+          x2= xi(.5)
+          
+    	return "M" + x0 + "," + y0
+    	  // + "L"	+ xs + "," +ys
+           + "C" + x0 + "," + y2
+           + " " + x1 + "," + y2
+           + " " + x1 + "," + y1
+           + "L" + x1 + "," + (y1-70); 
+
+    }
 		
 
 function createExchanges(d) {
@@ -506,7 +604,7 @@ function createExchanges(d) {
 				exchanges
 				.append("path")
 				.attr("class", "exchange "+d.name+" "+b.name)
-				.style("stroke", "#AFCEB4")
+				.style("stroke", excolor)
 				.style("opacity","0.6")
 		        .style("stroke-width", exlerp(d.exchanges[e]-b.exchanges[d.name]))
 		        .attr("fill","none")
@@ -544,16 +642,16 @@ function createExchanges(d) {
 
 function dirlink(ax,ay,bx,by,i) {
 	
-      var x0 = ax,
+      var x0 = ax+rad-30,
           x1 = bx-(rad+20)*0.86,
-          y0 = ay,
+          y0 = ay+rad-30,
           y1 = by+(rad+20)*0.5,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.5);
           
           
       return "M" + x0 + "," + y0
-           + "Q" + x2 + "," + parseInt(y0+(x1-x0)*(0.5-i*0.05))
+           + "Q" + x2 + "," + parseInt(y0+(x1-x0)*(0.4-i*0.05))
            + " " + x1 + "," + y1;
     }
 
@@ -689,6 +787,8 @@ initialize()
 function createCharts() {
 
 
+charty=900
+
 //Data by countries
 var years=d3.map(data).keys()
 var lines={};
@@ -721,44 +821,44 @@ legend=svg.append("g")
 
 legend.append("line")
 .attr("x1",0)
-.attr("y1",920)
+.attr("y1",charty+20)
 .attr("x2",10)
-.attr("y2",920)
-.style("stroke","#8bba83")
+.attr("y2",charty+20)
+.style("stroke",popcolor)
 .style("stroke-width",2)
 
 legend.append("text")
 .attr("x",15)
-.attr("y",925)
-.style("fill","#333")
+.attr("y",charty+25)
+.style("fill","gray")
 .text("Population")
 
 legend.append("line")
 .attr("x1",0)
-.attr("y1",935)
+.attr("y1",charty+35)
 .attr("x2",10)
-.attr("y2",935)
-.style("stroke","#695C4B")
+.attr("y2",charty+35)
+.style("stroke",conscolor)
 .style("stroke-width",2)
 
 legend.append("text")
 .attr("x",15)
-.attr("y",940)
-.style("fill","#333")
+.attr("y",charty+40)
+.style("fill","gray")
 .text("Demand per person")
 
 legend.append("line")
 .attr("x1",0)
-.attr("y1",950)
+.attr("y1",charty+50)
 .attr("x2",10)
-.attr("y2",950)
-.style("stroke","#ED653F")
+.attr("y2",charty+50)
+.style("stroke",suncolor)
 .style("stroke-width",2)
 
 legend.append("text")
 .attr("x",15)
-.attr("y",955)
-.style("fill","#333")
+.attr("y",charty+55)
+.style("fill","gray")
 .text("Solar yield")
 
 
@@ -779,9 +879,9 @@ var valueline3 = d3.svg.line()
 
 svg.append("line")
 .attr("x1",0)
-.attr("y1",900)
+.attr("y1",charty)
 .attr("x2",width)
-.attr("y2",900)
+.attr("y2",charty)
 .style("stroke","gray")
 .style("stroke-width",2);
 
@@ -792,7 +892,7 @@ d3.selectAll(".region").each(function(d){
 		chart=d3.select(this)
 		.append("g")
 		.attr("class","chart")
-		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+980+")"});
+		.attr("transform", function(){console.log(d,d.x);return "translate("+(d.x-defsiz/2)+","+(charty+80)+")"});
 
 		maxpop=d3.max(lines[d.name],function(e){return e.population})
 		minpop=d3.min(lines[d.name],function(e){return e.population})
@@ -813,21 +913,21 @@ d3.selectAll(".region").each(function(d){
 
 		chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
-        .style("stroke","#8bba83")
+        .style("stroke",popcolor)
         .style("stroke-width",2)
         .style("fill","none")
         .attr("d", valueline1(lines[d.name]))
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
-        .style("stroke","#695C4B")
+        .style("stroke",conscolor)
         .style("stroke-width",2)
         .style("fill","none")
         .attr("d", valueline2(lines[d.name]));
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
-        .style("stroke","#ED653F")
+        .style("stroke",suncolor)
         .style("stroke-width",2)
         .style("fill","none")
         .attr("d", valueline3(lines[d.name]));
@@ -848,7 +948,13 @@ d3.selectAll(".region").each(function(d){
 
 function createSections() {
 	
-	secy = 700;
+	secy = 730;
+	
+	svg
+	.append("text")
+	.attr("class","title gen-text")
+	.attr("y", secy-40)
+	.text("Ins and outs")
 	
 	d3.selectAll(".region").each(function(d){
 
@@ -859,7 +965,7 @@ function createSections() {
     
 		flux
 		.append("line")
-		.style("stroke", "#ED653F")
+		.style("stroke", suncolor)
 		.attr("class",function(d) {return "yield-sect "+d.name})
 		.attr("marker-end","url(#pointer)");
 		
@@ -878,9 +984,9 @@ function createSections() {
       	flux
 		.append("circle")
 		.attr("class",function(d) {return "sect-sun "+d.name})
-		.style("stroke","#ED653F")
+		.style("stroke",suncolor)
 		.style("stroke-width","3")
-		.style("fill","#ffffff")
+		.style("fill",sunfill)
 		.style("stroke-dasharray","5 3")
 		.attr("r",10)
 		.attr("cx",d.x-defsiz/3.5)
@@ -890,7 +996,7 @@ function createSections() {
     	 flux
 	.append("line")
 	.attr("class",function(d) {return "sec-consumption "+d.name})
-	.style("stroke", "#695C4B")
+	.style("stroke", conscolor)
 	.attr("marker-end","url(#pointer5)");
 	
 	flux.selectAll("line.sec-consumption")
@@ -950,10 +1056,10 @@ function createSections() {
 			.attr("y1",secy+80+totVal/2)
 			.attr("x2",d.x-defsiz/2.3)
 			.attr("y2",secy+80+totVal/2)
-			.style("stroke", "#AFCEB4")
+			.style("stroke", excolor)
 			
 				flux.append("path")
-			.style("fill",  "#AFCEB4")
+			.style("fill",  excolor)
 			.attr("class","in "+d.name)
 			.attr("opacity",0.6)
 			.attr("d",function(d){
@@ -987,10 +1093,10 @@ function createSections() {
 		.attr("y1",secy+80+totVal/2)
 		.attr("x2",d.x+defsiz/2.3)
 		.attr("y2",secy+80+totVal/2)
-		.style("stroke", "#AFCEB4")
+		.style("stroke", excolor)
 		
 		flux.append("path")
-		.style("fill",  "#AFCEB4")
+		.style("fill",  excolor)
 		.attr("class","in "+d.name)
 		.attr("opacity",0.6)
 		.attr("d",function(d){
@@ -1102,7 +1208,7 @@ defs=svg.append("svg:defs")
 defs.append("svg:marker")
     .attr("id", "pointer2")
     .attr("viewBox", "0 -5 10 10")
-    .style("fill","#AFCEB4")
+    .style("fill",excolor)
     .attr("refX", 0.2)
     .attr("refY", 0)
     .attr("markerWidth", 1)
@@ -1138,7 +1244,7 @@ defs.append("svg:marker")
     defs.append("svg:marker")
     .attr("id", "pointer5")
     .attr("viewBox", "0 -5 10 10")
-    .style("fill","#695C4B")
+    .style("fill",conscolor)
     .attr("refX", 0.2)
     .attr("refY", 0)
     .attr("markerWidth", 1)
@@ -1150,7 +1256,7 @@ defs.append("svg:marker")
     defs.append("svg:marker")
     .attr("id", "tail")
     .attr("viewBox", "0 -5 10 10")
-    .style("fill","#AFCEB4")
+    .style("fill",excolor)
     .attr("refX", 0.2)
     .attr("refY", 0)
     .attr("markerWidth", 1)
