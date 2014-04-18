@@ -791,7 +791,7 @@ legend.append("line")
 .attr("x2",10)
 .attr("y2",920)
 .style("stroke","#2FBAB2")
-.style("stroke-width",2)
+.style("stroke-width",3)
 
 legend.append("text")
 .attr("x",15)
@@ -805,7 +805,7 @@ legend.append("line")
 .attr("x2",10)
 .attr("y2",935)
 .style("stroke","#695C4B")
-.style("stroke-width",2)
+.style("stroke-width",3)
 
 legend.append("text")
 .attr("x",15)
@@ -819,7 +819,7 @@ legend.append("line")
 .attr("x2",10)
 .attr("y2",950)
 .style("stroke","#ED653F")
-.style("stroke-width",2)
+.style("stroke-width",3)
 
 legend.append("text")
 .attr("x",15)
@@ -880,21 +880,21 @@ d3.selectAll(".region").each(function(d){
 		chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
         .style("stroke","#2FBAB2")
-        .style("stroke-width",2)
+        .style("stroke-width",3)
         .style("fill","none")
         .attr("d", valueline1(lines[d.name]))
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
         .style("stroke","#695C4B")
-        .style("stroke-width",2)
+        .style("stroke-width",3)
         .style("fill","none")
         .attr("d", valueline2(lines[d.name]));
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
         .style("stroke","#ED653F")
-        .style("stroke-width",2)
+        .style("stroke-width",3)
         .style("fill","none")
         .attr("d", valueline3(lines[d.name]));
 		

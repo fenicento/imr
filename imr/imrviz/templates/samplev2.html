@@ -4,7 +4,7 @@
 
 {% block content %}
 
-	
+
 	{% load staticfiles %}
 	<link rel="stylesheet" href="{% static "imr/css/vizstyle.css" %}"/>
 	<script src="{% static "imr/js/jquery.js" %}"></script>
@@ -12,9 +12,9 @@
     <script src="{% static "imr/js/d3.v3.min.js" %}"></script>
     <script src="{% static "imr/js/d3-bootstrap-plugins.min.js" %}"></script>
     <script src="{% static "imr/js/data.js" %}"></script>
-    
+
 	<br/>
-	
+
 	<div id="controls">
     <div id="years">
       <div id="years-cont">
@@ -29,7 +29,7 @@
   <div id="title">
   	<h2>Energy flows between spaces</h2> <img style="display:none" class="legend-img" src="{% static "imr/img/legend.png" %}" />
   </div>
- 
+
 <div id="viz">
 </div>
 
@@ -42,7 +42,7 @@ var svg = d3.select("#viz")
         .attr("width", width)
         .attr("height", height);
 
-    
+
 
 
 a=d3.values(data);
@@ -57,7 +57,7 @@ var stocks;
 computeAllStocks();
 
 function findPopulationBounds(s) {
-	
+
 	space = $.grep(nested_data,function(d){return d.key == s})[0];
 	spaceVals = space.values;
 	max=d3.max(spaceVals,function(d){return d.population});
@@ -67,7 +67,7 @@ function findPopulationBounds(s) {
 }
 
 function findStockBounds(s) {
-	
+
 	space = $.grep(nested_data,function(d){return d.key == s})[0];
 	spaceVals = space.values;
 	max=d3.max(spaceVals,function(d){return d.stock});
@@ -105,8 +105,10 @@ var totstock=0;
 var netExchanges=[];
 var suncolor='#f7a95b'
 var excolor='#a84940'
-var conscolor='#95A1A5'
-var popcolor = '#789c72'
+var conscolor = "#8ba5b2"
+//var conscolor='#95A1A5'
+var popcolor = '#99ba87'
+//var popcolor = '#789c72'
 var sunfill = "#ffffff"
 
 exc=svg.append("g")
@@ -140,7 +142,6 @@ svg
 .attr("text-anchor", "middle")
 .attr("x", width/2-5)
 .attr("y", suny+5)
-.attr("font-family", "Lato")
 .attr("font-size", "1.3em")
 .text("SUN")
 .attr("fill", "gray");
@@ -150,7 +151,7 @@ function computeSpaces() {
 
 	totstock=0;
 	totpop=0;
-	
+
 	num=currData.length;
 	totsiz=defsiz*num;
 	oversiz=width-totsiz;
@@ -159,8 +160,8 @@ function computeSpaces() {
 	maxex=0;
 
 	for(i =0; i<num; i++) {
-		
-		
+
+
 		popBounds=findPopulationBounds(currData[i].name)
 		stockBounds=findStockBounds(currData[i].name)
 		poplerp.domain(popBounds);
@@ -177,7 +178,7 @@ function computeSpaces() {
 		currData[i].y=defy;
 		currData[i].comp_pop=poplerp(currData[i].population);
 		currData[i].comp_stock=stockfilllerp(currData[i].stock);
-	
+
 	}
 	surflerp.domain([1,totpop]);
 	stocklerp.domain([0,totstock]);
@@ -185,7 +186,7 @@ function computeSpaces() {
 	sunlerp.domain([1, d3.max(currData, function(d) { return d.offer; })]);
 
 	for(i =0; i<num; i++) {
-		
+
 
 		currData[i].leTotOffer=sunlerp(currData[i].offer)
 		currData[i].leDemand=sunlerp(currData[i].demand)
@@ -251,18 +252,18 @@ re.selectAll("path.yeld")
 re.selectAll("path.yeld")
 .tooltip(function(d){
     console.log(d.x,d.y);
-    return {        
+    return {
       //The text within the tooltip
       type:"tooltip",
       gravity:"north",
-      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of offer", 
+      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of offer",
       detection: "shape",
-      //Where 
+      //Where
       placement: "fixed",
       // Base positioning. Not used when placement is "mouse"
       position: [d.x,d.y-270],
       //How far the tooltip is shifted from the base
-      displacement: [-75,0], //Shifting parts of the graph over.           
+      displacement: [-75,0], //Shifting parts of the graph over.
       //If "mouse"" is the base poistion, then mousemove true allows
       //the tooltip to move with the mouse
       mousemove: false
@@ -287,18 +288,18 @@ re.selectAll("line.consumption")
 re.selectAll("line.consumption")
 .tooltip(function(d){
     console.log(d.x,d.y);
-    return {        
+    return {
       //The text within the tooltip
       type:"tooltip",
       gravity:"north",
-      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of demand", 
+      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of demand",
       detection: "shape",
-      //Where 
+      //Where
       placement: "fixed",
       // Base positioning. Not used when placement is "mouse"
       position: [d.x,d.y-270],
       //How far the tooltip is shifted from the base
-      displacement: [-75,0], //Shifting parts of the graph over.           
+      displacement: [-75,0], //Shifting parts of the graph over.
       //If "mouse"" is the base poistion, then mousemove true allows
       //the tooltip to move with the mouse
       mousemove: false
@@ -320,18 +321,18 @@ re.selectAll("path.consumption")
 re.selectAll("path.consumption")
 .tooltip(function(d){
     console.log(d.x,d.y);
-    return {        
+    return {
       //The text within the tooltip
       type:"tooltip",
       gravity:"north",
-      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of demand", 
+      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of demand",
       detection: "shape",
-      //Where 
+      //Where
       placement: "fixed",
       // Base positioning. Not used when placement is "mouse"
       position: [d.x,d.y-270],
       //How far the tooltip is shifted from the base
-      displacement: [-75,0], //Shifting parts of the graph over.           
+      displacement: [-75,0], //Shifting parts of the graph over.
       //If "mouse"" is the base poistion, then mousemove true allows
       //the tooltip to move with the mouse
       mousemove: false
@@ -400,11 +401,11 @@ arc = d3.svg.arc()
 .innerRadius(rad*3/4)
 .outerRadius(function(d){return rad*3/4+d.comp_pop})
 .startAngle(function(d){
-	if(d.name==="world") return (-surflerp(d.surface)/2-Math.PI/2); 
+	if(d.name==="world") return (-surflerp(d.surface)/2-Math.PI/2);
 	else return (-surflerp(d.surface)/2+Math.PI/2)
 	})
 .endAngle(function(d){
-	if(d.name==="world") return (surflerp(d.surface)/2-Math.PI/2); 
+	if(d.name==="world") return (surflerp(d.surface)/2-Math.PI/2);
 	else return (surflerp(d.surface)/2+Math.PI/2)
 	});
 
@@ -413,15 +414,15 @@ arc2 = d3.svg.arc()
 .outerRadius(function(d){return rad*2/4+d.comp_stock})
 .innerRadius(rad*2/4-1)
 .startAngle(function(d){
-	if(d.name==="world") return -stocklerp(d.stock)/2-Math.PI/2; 
+	if(d.name==="world") return -stocklerp(d.stock)/2-Math.PI/2;
 	else return -stocklerp(d.stock)/2+Math.PI/2;
 	})
 .endAngle(function(d){
-	if(d.name==="world") return stocklerp(d.stock)/2-Math.PI/2; 
+	if(d.name==="world") return stocklerp(d.stock)/2-Math.PI/2;
 	else return stocklerp(d.stock)/2+Math.PI/2;
 	});
 
-	    
+
 //CREATE PIES
 re.append("path")
 .attr("class",function(d) {return "surface "+d.name})
@@ -434,18 +435,18 @@ re.selectAll("path.surface")
 re.selectAll("path.surface")
 .tooltip(function(d){
     console.log(d.x,d.y);
-    return {        
+    return {
       //The text within the tooltip
       type:"tooltip",
       gravity:"north",
-      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Population: "+d.surface, 
+      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Population: "+d.surface,
       detection: "shape",
-      //Where 
+      //Where
       placement: "fixed",
       // Base positioning. Not used when placement is "mouse"
       position: [d.x,d.y],
       //How far the tooltip is shifted from the base
-      displacement: [70,-50], //Shifting parts of the graph over.           
+      displacement: [70,-50], //Shifting parts of the graph over.
       //If "mouse"" is the base poistion, then mousemove true allows
       //the tooltip to move with the mouse
       mousemove: false
@@ -463,18 +464,18 @@ re.selectAll("path.stock")
 re.selectAll("path.stock")
 .tooltip(function(d){
     console.log(d.x,d.y);
-    return {        
+    return {
       //The text within the tooltip
       type:"tooltip",
       gravity:"north",
-      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Stock: "+d.stock, 
+      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Stock: "+d.stock,
       detection: "shape",
-      //Where 
+      //Where
       placement: "fixed",
       // Base positioning. Not used when placement is "mouse"
       position: [d.x,d.y],
       //How far the tooltip is shifted from the base
-      displacement: [20,-50], //Shifting parts of the graph over.           
+      displacement: [20,-50], //Shifting parts of the graph over.
       //If "mouse"" is the base poistion, then mousemove true allows
       //the tooltip to move with the mouse
       mousemove: false
@@ -486,7 +487,6 @@ re
 .attr("class","space-name")
 .attr("text-anchor", "middle")
 .attr("y", function(d){return d.y-10})
-.attr("font-family", "Lato")
 .attr("font-size", "10px")
 .attr("fill", "gray");
 
@@ -499,7 +499,6 @@ re
 .attr("class","space-pop")
 .attr("text-anchor", "middle")
 .attr("y", function(d){return d.y+5})
-.attr("font-family", "Lato")
 .attr("font-size", "10px")
 .attr("fill", "gray");
 
@@ -512,7 +511,6 @@ re
 .attr("class","space-stock")
 .attr("text-anchor", "middle")
 .attr("y",function(d){return d.y+20})
-.attr("font-family", "Lato")
 .attr("font-size", "10px")
 .attr("fill", "gray");
 
@@ -528,7 +526,6 @@ svg.append("text")
 .attr("text-anchor", "middle")
 .style("fill","gray")
 .attr("class","gen-text")
-.attr("font-family", "Lato")
 .attr("font-size", "12px")
 .text("Global consumption")
 
@@ -548,8 +545,8 @@ function createSunLine(d) {
           yi = d3.interpolateNumber(y0, y1/3),
           y2 = yi(.2),
           y3 = yi(1 - .2);
-          
-        
+
+
          return "M" + x0 + "," + y0
            + "C" + x0 + "," + y2
            + " " + x1 + "," + y3
@@ -570,33 +567,33 @@ function createYeldLine(d) {
            + "C" + x0 + "," + y2
            + " " + x1 + "," + y3
            + " " + x1 + "," + (y1-70)
-           + "L" + x1 + "," + y1; 	
+           + "L" + x1 + "," + y1;
 
     }
-    
+
 function createConsLine(d) {
 		var x0;
 		 if(d.num<num) x0 = consx+d.leDemand/2*(d.num-(num/2.5))
 		 else if(d.num<num) x0 = consx+d.leDemand/2*(d.num-(num/2.5))
 		 else x0 = consx;
           var  x1= d.x,
-         
+
           y1 = d.y+100,
           y0 = consy,
           xi = d3.interpolateNumber(x0, x1/2),
           yi = d3.interpolateNumber(y0, y1),
           y2 = yi(.5),
           x2= xi(.5)
-          
+
     	return "M" + x0 + "," + y0
     	  // + "L"	+ xs + "," +ys
            + "C" + x0 + "," + y2
            + " " + x1 + "," + y2
            + " " + x1 + "," + y1
-           + "L" + x1 + "," + (y1-70); 
+           + "L" + x1 + "," + (y1-70);
 
     }
-		
+
 
 function createExchanges(d) {
 
@@ -619,26 +616,26 @@ function createExchanges(d) {
 		        .attr("marker-end","url(#pointer2)");
 
                 d3.select(".exchange."+d.name+"."+b.name).tooltip(function(){
-                    
-                    return {        
+
+                    return {
                       //The text within the tooltip
                       type:"tooltip",
                       gravity:"north",
-                      text: "<b>Net exchange "+d.name.replace(/_/g, ' ')+" - "+b.name.replace(/_/g, ' ')+"</b><br/>Value: "+exlerp(d.exchanges[e]-b.exchanges[d.name]), 
+                      text: "<b>Net exchange "+d.name.replace(/_/g, ' ')+" - "+b.name.replace(/_/g, ' ')+"</b><br/>Value: "+exlerp(d.exchanges[e]-b.exchanges[d.name]),
                       detection: "shape",
-                      //Where 
+                      //Where
                       placement: "fixed",
                       // Base positioning. Not used when placement is "mouse"
                       position: [d.x+(b.x-d.x)/2,d.y+80],
                       //How far the tooltip is shifted from the base
-                      displacement: [-90,0], //Shifting parts of the graph over.           
+                      displacement: [-90,0], //Shifting parts of the graph over.
                       //If "mouse"" is the base poistion, then mousemove true allows
                       //the tooltip to move with the mouse
                       mousemove: false
                     };
                 });
 
-                
+
                 netExchanges.push({"source":d.name,"target":b.name,"value":exlerp(d.exchanges[e]-b.exchanges[d.name])});
 
 			}
@@ -648,15 +645,15 @@ function createExchanges(d) {
 
 
 function dirlink(ax,ay,bx,by,i) {
-	
+
       var x0 = ax+rad-30,
           x1 = bx-(rad+20)*0.86,
           y0 = ay+rad-30,
           y1 = by+(rad+20)*0.5,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.5);
-          
-          
+
+
       return "M" + x0 + "," + y0
            + "Q" + x2 + "," + parseInt(y0+(x1-x0)*(0.4-i*0.05))
            + " " + x1 + "," + y1;
@@ -683,10 +680,10 @@ function dirlink(ax,ay,bx,by,i) {
     	if(a) {
     	arr=$.makeArray($(".region").not("."+a))
     	}
-    	else arr=$.makeArray($(".region"))  
-    	
+    	else arr=$.makeArray($(".region"))
+
     	arr.forEach(function(e){
-    		
+
 	    	$(e).find(".sun").first().remove();
 	    	$(e).find(".yeld").first().remove();
 	    	$(e).find(".consumption").first().remove();
@@ -706,10 +703,10 @@ function dirlink(ax,ay,bx,by,i) {
     	console.log("called expand")
     	obj=$.grep(data[curyear], function(f){ return f.name == d.grouped[0]; });
     	obj=obj[0];
-    	
+
     	d.grouped.splice(0,1);
     	newgroup=d.grouped;
-    	
+
     	if(newgroup.length>1) {
     		newgroup.forEach(function(e) {
     			console.log("e",e)
@@ -732,7 +729,7 @@ function dirlink(ax,ay,bx,by,i) {
     	currData.splice(d.num+1,0,obj);
     	initialize();
     	removeDuplicates(obj.name);
-    	console.log("expanded "+obj.name) 
+    	console.log("expanded "+obj.name)
     }
 
     function expandAll() {
@@ -754,7 +751,7 @@ function dirlink(ax,ay,bx,by,i) {
     		$(".y"+i).addClass("active");
     		toShrink=[]
 	    	newData=JSON.parse(JSON.stringify(data[i]));
-	    	
+
 	    	currData.forEach(function(e){
 	    		if(e.grouped && e.grouped.length>0) {
 	    			e.grouped.forEach(function(r){
@@ -762,13 +759,13 @@ function dirlink(ax,ay,bx,by,i) {
 	    			})
 	    		}
 	    	})
-	    	
+
 	    	currData=newData;
 	    	$(".region").remove();
 	    	initialize();
 
 	    	toShrink.forEach(function(e){
-	    	
+
 	    		ts=$.grep(currData, function(f){ return f.name == e })[0];
 	    		console.log("ts",ts)
 	    		merge(ts);
@@ -795,7 +792,7 @@ function createCharts() {
 
 
 
-charty=940
+charty=970
 
 svg
 	.append("text")
@@ -821,9 +818,9 @@ xAxis
 years.forEach(function(year) {
 
 	k=d3.values(data[year]);
-	
+
 	k.forEach(function(ob) {
-		
+
 		ob.year=year
 		if(!lines[ob.name]) lines[ob.name]=[]
 		lines[ob.name].push(ob);
@@ -841,7 +838,7 @@ legend.append("line")
 .attr("x2",10)
 .attr("y2",charty+20)
 .style("stroke",popcolor)
-.style("stroke-width",2)
+.style("stroke-width",3)
 
 legend.append("text")
 .attr("x",15)
@@ -855,7 +852,7 @@ legend.append("line")
 .attr("x2",10)
 .attr("y2",charty+35)
 .style("stroke",conscolor)
-.style("stroke-width",2)
+.style("stroke-width",3)
 
 legend.append("text")
 .attr("x",15)
@@ -869,7 +866,7 @@ legend.append("line")
 .attr("x2",10)
 .attr("y2",charty+50)
 .style("stroke",suncolor)
-.style("stroke-width",2)
+.style("stroke-width",3)
 
 legend.append("text")
 .attr("x",15)
@@ -879,17 +876,17 @@ legend.append("text")
 
 
 var valueline1 = d3.svg.line()
-.interpolate("basis") 
+.interpolate("basis")
 .x(function(d) { return xlerp(d.year); })
 .y(function(d) { return plerp(d.population); });
 
 var valueline2 = d3.svg.line()
-.interpolate("basis") 
+.interpolate("basis")
 .x(function(d) { return xlerp(d.year) })
 .y(function(d) { return dlerp(d.demand) });
 
 var valueline3 = d3.svg.line()
-.interpolate("basis") 
+.interpolate("basis")
 .x(function(d) { return xlerp(d.year); })
 .y(function(d) { return nlerp(d.yeld); });
 
@@ -930,24 +927,34 @@ d3.selectAll(".region").each(function(d){
 		chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
         .style("stroke",popcolor)
-        .style("stroke-width",2)
+        .style("stroke-width",3)
         .style("fill","none")
         .attr("d", valueline1(lines[d.name]))
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
         .style("stroke",conscolor)
-        .style("stroke-width",2)
+        .style("stroke-width",3)
         .style("fill","none")
         .attr("d", valueline2(lines[d.name]));
 
         chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
         .style("stroke",suncolor)
-        .style("stroke-width",2)
+        .style("stroke-width",3)
         .style("fill","none")
         .attr("d", valueline3(lines[d.name]));
-		
+
+        chart
+        .append("text")
+        .attr("class","trend-name")
+        .attr("text-anchor", "middle")
+        .attr('x',defsiz/2)
+        .attr("y", 120)
+        .attr("font-size", "10px")
+        .attr("fill", "gray")
+        .text(function(d){return d.name});
+
 		chart.append("g")
 		.attr("class", "axis")
 		.call(xAxis)
@@ -963,9 +970,9 @@ d3.selectAll(".region").each(function(d){
 //=====================================================================
 
 function createSections() {
-	
+
 	secy = 750;
-	
+
 	svg.append("line")
 	.attr("x1",0)
 	.attr("y1",secy-100)
@@ -974,26 +981,26 @@ function createSections() {
 	.style("stroke","gray")
 	.style("stroke-width",0.5);
 
-	
+
 	svg
 	.append("text")
 	.attr("class","title gen-text")
 	.attr("y", secy-60)
 	.text("Ins and outs")
-	
+
 	d3.selectAll(".region").each(function(d){
 
         flux=d3.select(this)
         .append("g")
         .attr("class",function(e){return "section "+d.name})
-       
-    
+
+
 		flux
 		.append("line")
 		.style("stroke", suncolor)
 		.attr("class",function(d) {return "yield-sect "+d.name})
 		.attr("marker-end","url(#pointer)");
-		
+
 		flux.selectAll("line.yield-sect")
 		.transition()
 		.style("stroke-width", function(d){return d.leYeld/3})
@@ -1003,9 +1010,9 @@ function createSections() {
 		.attr("x2",  function(d){return d.x-30})
 		//.attr("y2",  function(d){return d.y-70+d.leOffer/3-d.leOffer*2.77})
 		.attr("y2",  function(d){return secy+35})
-    
-    
-      
+
+
+
       	flux
 		.append("circle")
 		.attr("class",function(d) {return "sect-sun "+d.name})
@@ -1016,14 +1023,14 @@ function createSections() {
 		.attr("r",10)
 		.attr("cx",d.x-defsiz/3.5)
 		.attr("cy",secy)
-      
-        
+
+
     	 flux
 	.append("line")
 	.attr("class",function(d) {return "sec-consumption "+d.name})
 	.style("stroke", conscolor)
 	.attr("marker-end","url(#pointer5)");
-	
+
 	flux.selectAll("line.sec-consumption")
 	.transition()
 	.style("stroke-width",  function(d){return d.leDemand})
@@ -1031,22 +1038,22 @@ function createSections() {
 	.attr("y1",  function(d){return secy+40})
 	.attr("x2",  function(d){return d.x+60})
 	.attr("y2",  function(d){return secy})
-    
+
        flux.append("svg:image")
    .attr('x',function(d){return d.x-90})
    .attr('y',secy)
    .attr('width', 180)
    .attr('height', 80)
    .attr("xlink:href","{% static 'imr/img/space2.png' %}")
-   
+
    flux.append("rect")
    .attr('x',function(d){return d.x-75})
    .attr('y',secy+82)
     .attr("width", 150)
     .attr("height", 80)
     .style("fill", "#ededed");
-   
-   
+
+
    flux.append("rect")
    .attr('x',function(d){return d.x-75})
    .attr('y',secy+82)
@@ -1056,34 +1063,41 @@ function createSections() {
     	chartstocklerp.domain([0, a.maxstock])
     	return chartstocklerp(d.stock)})
     .style("fill", "url(#gradient)");
-    
-    
+
+
     stockUsage = d.leDemand-d.leYeld/3
-    
+
     flux.append("path")
     .style("fill",  "#666666")
 	.attr("class","in "+d.name)
 	//.attr("opacity",0.6)
 	.attr("d",function(d){
-			
+
 		p1=(d.x-stockUsage/2)+","+(secy+82)
-		p2=(d.x)+","+(secy+62)
+                p2=(d.x)+","+(secy+62)
 		p3=(d.x+stockUsage/2)+","+(secy+82)
-			
-		return "M"+p1+"L"+p2+"L"+p3+"Z"})    
 
-	   
+		return "M"+p1+"L"+p2+"L"+p3+"Z"})
 
-    
-    
+        flux
+            .append("text")
+            .attr("class","sect-name")
+            .attr("text-anchor", "middle")
+            .attr('x',function(d){return d.x})
+            .attr("y", function(d){return secy+190})
+            .attr("font-size", "10px")
+            .attr("fill", "gray")
+            .text(function(d){return d.name});
+
+
     var totVal=0;
 		d.ins.forEach(function(c,i) {
-			
+
 			totVal+=c.value
 			//gap+=secy+80+c.value*0.7;
-			
+
 		})
-		
+
 		flux.append("line")
 			.style("stroke-width",  totVal)
 			.attr("class","in "+d.name)
@@ -1093,29 +1107,29 @@ function createSections() {
 			.attr("x2",d.x-defsiz/2.3)
 			.attr("y2",secy+80+totVal/2)
 			.style("stroke", excolor)
-			
+
 				flux.append("path")
 			.style("fill",  excolor)
 			.attr("class","in "+d.name)
 			.attr("opacity",0.6)
 			.attr("d",function(d){
-				
+
 			p1=(d.x-defsiz/2.3+0.5)+","+(secy+80)
 			p2=(d.x-defsiz/2.3-10)+","+(secy+80)
 			p3=(d.x-defsiz/2.3-5)+","+(secy+80+totVal/2)
 			p4=(d.x-defsiz/2.3-10)+","+(secy+80+totVal)
 			p5=(d.x-defsiz/2.3+0.5)+","+(secy+80+totVal)
-				
-			return "M"+p1+"L"+p2+"L"+p3+"L"+p4+"L"+p5+"Z"})    
+
+			return "M"+p1+"L"+p2+"L"+p3+"L"+p4+"L"+p5+"Z"})
 
 		totVal=0;
-		
+
 		d.outs.forEach(function(c,i) {
-			
+
 			totVal+=c.value;
-			
-		})  
-		
+
+		})
+
 		flux.append("line")
 		.style("stroke-width",  totVal)
 		.attr("class","out "+d.name)
@@ -1125,49 +1139,49 @@ function createSections() {
 		.attr("x2",d.x+defsiz/2.3)
 		.attr("y2",secy+80+totVal/2)
 		.style("stroke", excolor)
-		
+
 		flux.append("path")
 		.style("fill",  excolor)
 		.attr("class","in "+d.name)
 		.attr("opacity",0.6)
 		.attr("d",function(d){
-			
+
 		p1=(d.x+defsiz/2.3-0.5)+","+(secy+80)
 		p2=(d.x+defsiz/2.3+10)+","+(secy+80+totVal/2)
 		p3=(d.x+defsiz/2.3-0.5)+","+(secy+80+totVal)
-			
-		return "M"+p1+"L"+p2+"L"+p3+"Z"})    
+
+		return "M"+p1+"L"+p2+"L"+p3+"Z"})
       })
-	
+
 	}
 
 
     function dirlink3(ax,ay,bx,by,i) {
-    
+
       var x0 = ax,
           x1 = bx,
           y0 = ay,
           y1 = by,
           yi = d3.interpolateNumber(y0, y1),
           y2 = yi(.5);
-          
-          
+
+
       return "M" + x0 + "," + y0
            + "Q" + parseInt(x0+(y1-y0)) + "," + y1
            + " " + x1 + "," + y1;
-          
+
     }
 
     function dirlink2(ax,ay,bx,by,i) {
-    
+
       var x0 = ax,
           x1 = bx,
           y0 = ay,
           y1 = by,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.5);
-          
-          
+
+
       return "M" + x0 + "," + y0
            + "C" + x2 + "," + parseInt(y0+(x1-x0)*(0.5-i*0.05))
            + " " + (x1-60) + "," + y1
@@ -1175,7 +1189,7 @@ function createSections() {
     }
 
     function createExchangeLine(e,h) {
-        
+
         source=$.grep(currData,function(r){return r.name==e.source})[0]
         target=$.grep(currData,function(r){return r.name==e.target})[0]
         var x0 = source.x-70,
@@ -1184,7 +1198,7 @@ function createSections() {
           y1 = 750+h,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.7);
-                   
+
       return "M" + x0 + "," + y0
            + "Q" + x2 + "," + y1
            + " " + x1 + "," + y1;
@@ -1198,7 +1212,7 @@ function createSections() {
           y1 = 660+d.leYeld/6,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.5);
-                   
+
       return "M" + x0 + "," + y0
            + "Q" + x2 + "," + y1
            + " " + x1 + "," + y1;
@@ -1213,7 +1227,7 @@ function createSections() {
           y0 = 660+d.leDemand/2,
           xi = d3.interpolateNumber(x0, x1),
           x2 = xi(.5);
-                   
+
       return "M" + x0 + "," + y0
            + "Q" + x2 + "," + y0
            + " " + x1 + "," + y1;
@@ -1281,7 +1295,7 @@ defs.append("svg:marker")
     .attr("orient", "auto")
   .append("svg:path")
     .attr("d", "M0,-5L10,0L0,5");
-    
+
     defs.append("svg:marker")
     .attr("id", "tail")
     .attr("viewBox", "0 -5 10 10")
@@ -1293,7 +1307,7 @@ defs.append("svg:marker")
     .attr("orient", "auto")
   .append("svg:path")
     .attr("d", "M0,-5L10,-5L5,0L10,5L0,5");
-    
+
     gradient = defs
   .append("svg:linearGradient")
     .attr("id", "gradient")
@@ -1312,26 +1326,26 @@ gradient.append("svg:stop")
     .attr("offset", "100%")
     .attr("stop-color", "#999999")
     .attr("stop-opacity", 1);
-    
+
     function computeAllStocks() {
-    	stocks=[]	
-    	
+    	stocks=[]
+
     	nested_data.forEach(function(d,i) {
     		m=d3.max(d.values,function(e){return e.stock})
     		stocks.push({name:d.key,maxstock:m})
     	})
-    	
+
     	totmax = d3.max(stocks, function(f){return f.maxstock})
     	totmin = d3.min(stocks, function(f){return f.maxstock})
-    	
-    	
+
+
     }
-    
+
     function showLegend() {
     	$(".legend-img").fadeToggle(200);
     }
 
 </script>
-	  
+
 
     {% endblock %}

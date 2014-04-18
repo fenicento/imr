@@ -13,7 +13,7 @@ var data={
                 "europe": 300,
                 "france": 200,
                 "paris": 100,
-                "parc_des_ports": 40
+                "business district": 40
             }
         },
         {
@@ -29,7 +29,7 @@ var data={
                 "world": 120,
                 "france": 100,
                 "paris": 50,
-                "parc_des_ports": 30
+                "business district": 30
             }
         },
         {
@@ -45,7 +45,7 @@ var data={
                 "world": 90,
                 "europe": 60,
                 "paris": 50,
-                "parc_des_ports": 10
+                "business district": 10
             }
         },
         {
@@ -61,11 +61,11 @@ var data={
                 "world": 30,
                 "europe": 40,
                 "france": 10,
-                "parc_des_ports": 8
+                "business district": 8
             }
         },
         {
-            "name": "parc_des_ports",
+            "name": "business district",
             "composite": false,
             "offer": 90,
             "yeld": 0.29,
@@ -95,7 +95,7 @@ var data={
                 "europe": 300,
                 "france": 200,
                 "paris": 100,
-                "parc_des_ports": 40
+                "business district": 40
             }
         },
         {
@@ -111,7 +111,7 @@ var data={
                 "world": 120,
                 "france": 100,
                 "paris": 50,
-                "parc_des_ports": 30
+                "business district": 30
             }
         },
         {
@@ -127,7 +127,7 @@ var data={
                 "world": 90,
                 "europe": 60,
                 "paris": 50,
-                "parc_des_ports": 10
+                "business district": 10
             }
         },
         {
@@ -143,11 +143,11 @@ var data={
                 "world": 30,
                 "europe": 40,
                 "france": 10,
-                "parc_des_ports": 8
+                "business district": 8
             }
         },
         {
-            "name": "parc_des_ports",
+            "name": "business district",
             "composite": false,
             "offer": 90,
             "yeld": 0.19,
@@ -177,7 +177,7 @@ var data={
                 "europe": 300,
                 "france": 200,
                 "paris": 100,
-                "parc_des_ports": 40
+                "business district": 40
             }
         },
         {
@@ -193,7 +193,7 @@ var data={
                 "world": 120,
                 "france": 100,
                 "paris": 50,
-                "parc_des_ports": 30
+                "business district": 30
             }
         },
         {
@@ -209,7 +209,7 @@ var data={
                 "world": 90,
                 "europe": 60,
                 "paris": 50,
-                "parc_des_ports": 10
+                "business district": 10
             }
         },
         {
@@ -225,11 +225,11 @@ var data={
                 "world": 30,
                 "europe": 40,
                 "france": 10,
-                "parc_des_ports": 8
+                "business district": 8
             }
         },
         {
-            "name": "parc_des_ports",
+            "name": "business district",
             "composite": false,
             "offer": 90,
             "yeld": 0.12,
@@ -259,7 +259,7 @@ var data={
                 "europe": 300,
                 "france": 200,
                 "paris": 100,
-                "parc_des_ports": 40
+                "business district": 40
             }
         },
         {
@@ -275,7 +275,7 @@ var data={
                 "world": 120,
                 "france": 100,
                 "paris": 50,
-                "parc_des_ports": 30
+                "business district": 30
             }
         },
         {
@@ -291,7 +291,7 @@ var data={
                 "world": 90,
                 "europe": 60,
                 "paris": 50,
-                "parc_des_ports": 10
+                "business district": 10
             }
         },
         {
@@ -307,11 +307,11 @@ var data={
                 "world": 30,
                 "europe": 40,
                 "france": 10,
-                "parc_des_ports": 8
+                "business district": 8
             }
         },
         {
-            "name": "parc_des_ports",
+            "name": "business district",
             "composite": false,
             "offer": 90,
             "yeld": 0.09,
@@ -341,7 +341,7 @@ var data={
                 "europe": 400,
                 "france": 200,
                 "paris": 300,
-                "parc_des_ports": 70
+                "business district": 70
             }
         },
         {
@@ -357,7 +357,7 @@ var data={
                 "world": 120,
                 "france": 100,
                 "paris": 50,
-                "parc_des_ports": 30
+                "business district": 30
             }
         },
         {
@@ -373,7 +373,7 @@ var data={
                 "world": 90,
                 "europe": 60,
                 "paris": 50,
-                "parc_des_ports": 10
+                "business district": 10
             }
         },
         {
@@ -389,11 +389,11 @@ var data={
                 "world": 30,
                 "europe": 40,
                 "france": 10,
-                "parc_des_ports": 8
+                "business district": 8
             }
         },
         {
-            "name": "parc_des_ports",
+            "name": "business district",
             "composite": false,
             "offer": 90,
             "yeld": 0.19,
