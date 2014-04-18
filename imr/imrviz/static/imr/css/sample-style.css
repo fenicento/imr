@@ -47,7 +47,7 @@ text{font-family:"Lato", sans-serif;}
 
 svg{display:block; margin:0 auto;}
 .space-name, .sect-name, .trend-name{font-weight: bold;text-transform: uppercase;}
-#controls{width:1200px; margin:0 auto; clear:both;height:40px; margin-top:20px;position:relative;}
+#controls{width:1200px; margin:0 auto; clear:both;height:40px; margin-top:20px;position:relative; z-index:100;}
 #buttons{width:auto; float:right;}
 .but{margin-left:5px;padding:5px 10px; background-color:#f8f8f8;border:1px solid gray;text-decoration: none;color:gray;}
 .active{color:black;font-weight:bold;}
