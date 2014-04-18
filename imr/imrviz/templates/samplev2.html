@@ -35,14 +35,22 @@
 
 
 <script>
+
+var ctop = $("#controls").offset().top;
+
+    $(document).scroll(function() {
+        if($(document).scrollTop()>ctop) $('#controls').css('top', $(this).scrollTop()-ctop+10);
+        else $('#controls').css('top',0);
+    });
+
+
+
 var width=1200;
 var height=1200;
 var svg = d3.select("#viz")
         .append("svg")
         .attr("width", width)
         .attr("height", height);
-
-
 
 
 a=d3.values(data);
@@ -270,41 +278,6 @@ re.selectAll("path.yeld")
     };
 });
 
-//CREATE CONSUMPTION LINE
-/*re
-.append("line")
-.attr("class",function(d) {return "consumption "+d.name})
-.style("stroke", conscolor)
-.attr("marker-end","url(#pointer5)");
-
-re.selectAll("line.consumption")
-.transition()
-.style("stroke-width",  function(d){return d.leDemand})
-.attr("x1",  function(d){return d.x+d.leDemand*1.5})
-.attr("y1",  function(d){return d.y-70+d.leDemand})
-.attr("x2",  function(d){return d.x+d.leDemand*1.5+40})
-.attr("y2",  function(d){return d.y-70+d.leDemand-40})
-
-re.selectAll("line.consumption")
-.tooltip(function(d){
-    console.log(d.x,d.y);
-    return {
-      //The text within the tooltip
-      type:"tooltip",
-      gravity:"north",
-      text: "<b>"+d.name.replace(/_/g, ' ')+"</b><br/>Density of demand",
-      detection: "shape",
-      //Where
-      placement: "fixed",
-      // Base positioning. Not used when placement is "mouse"
-      position: [d.x,d.y-270],
-      //How far the tooltip is shifted from the base
-      displacement: [-75,0], //Shifting parts of the graph over.
-      //If "mouse"" is the base poistion, then mousemove true allows
-      //the tooltip to move with the mouse
-      mousemove: false
-    };
-});*/
 
 re
 .append("path")
@@ -763,6 +736,8 @@ function dirlink(ax,ay,bx,by,i) {
 	    	currData=newData;
 	    	$(".region").remove();
 	    	initialize();
+
+            $('#controls').css('top',0);
 
 	    	toShrink.forEach(function(e){
 
