@@ -759,7 +759,7 @@ function dirlink(ax,ay,bx,by,i) {
 	    			})
 	    		}
 	    	})
-
+            curyear=i;
 	    	currData=newData;
 	    	$(".region").remove();
 	    	initialize();
@@ -771,7 +771,7 @@ function dirlink(ax,ay,bx,by,i) {
 	    		merge(ts);
 	    	})
 	    }
-	    curyear=i;
+
     }
     function fillYears() {
 	d3.keys(data).forEach(function(e){
@@ -1044,7 +1044,7 @@ function createSections() {
    .attr('y',secy)
    .attr('width', 180)
    .attr('height', 80)
-   .attr("xlink:href","{% static 'imr/img/space2.png' %}")
+   .attr("xlink:href","{% static 'imr/img/' %}"+curyear+".png")
 
    flux.append("rect")
    .attr('x',function(d){return d.x-75})
