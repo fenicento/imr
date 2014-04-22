@@ -52,6 +52,7 @@ svg{display:block; margin:0 auto;}
 .but{margin-left:5px;padding:5px 10px; background-color:#f8f8f8;border:1px solid gray;text-decoration: none;color:gray;}
 .active{color:black;font-weight:bold;}
 #years{float:left;}
+#viz{clear:both;}
 .axis path,.axis line {fill: none; stroke: gray; shape-rendering: crispEdges;}
 .axis text {font-size: 10px;color:gray;}
 .vizspace{display: none;}
