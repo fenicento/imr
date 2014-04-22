@@ -108,6 +108,7 @@ var stockfilllerp = d3.scale.linear().range([20,5]);
 var exlerp = d3.scale.linear().range([1,20]);
 var poplerp = d3.scale.linear().range([5,19]);
 
+
 var totpop=0;
 var totstock=0;
 var netExchanges=[];
@@ -118,6 +119,7 @@ var conscolor = "#8ba5b2"
 var popcolor = '#99ba87'
 //var popcolor = '#789c72'
 var sunfill = "#ffffff"
+var stockcolor= "rgb(124, 108, 97)"
 
 exc=svg.append("g")
 .attr("class","netexchanges");
@@ -428,7 +430,7 @@ re.selectAll("path.surface")
 
 re.append("path")
 .attr("class",function(d) {return "stock "+d.name})
-.style("fill","gray");
+.style("fill",stockcolor);
 
 re.selectAll("path.stock")
 .attr("d", arc2)
@@ -1075,7 +1077,7 @@ function createSections() {
     stockUsage = d.leDemand-d.leYeld/3
 
     flux.append("path")
-    .style("fill",  "#666666")
+    .style("fill",  stockcolor)
 	.attr("class","in "+d.name)
 	//.attr("opacity",0.6)
 	.attr("d",function(d){
@@ -1326,12 +1328,12 @@ defs.append("svg:marker")
 
 gradient.append("svg:stop")
     .attr("offset", "0%")
-    .attr("stop-color", "#666666")
+    .attr("stop-color", stockcolor)
     .attr("stop-opacity", 1);
 
 gradient.append("svg:stop")
     .attr("offset", "100%")
-    .attr("stop-color", "#999999")
+    .attr("stop-color", "rgb(94, 81, 72)")
     .attr("stop-opacity", 1);
 
     function computeAllStocks() {
