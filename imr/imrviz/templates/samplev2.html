@@ -491,7 +491,24 @@ d3.selectAll("text.space-stock")
 .attr("x", function(d) { return d.x })
 .text( function (d) { return ((d.stock/totstock)*100).toFixed(2)+"% stock"})
 
+
+re
+.append("text")
+.attr("class","space-yield")
+.attr("text-anchor", "middle")
+.attr("y",function(d){return consy+60})
+.attr("font-size", "14px")
+.attr("fill", "gray");
+
+
+
+d3.selectAll("text.space-yield")
+.attr("x", function(d) { return d.x })
+.text( function (d) { return "Solar yield: "+d.yeld})
+
 re.exit().remove()
+
+
 
 svg.append("text")
 .attr("x",width/2)
@@ -748,11 +765,26 @@ function dirlink(ax,ay,bx,by,i) {
 	    }
 
     }
+
+
+    function timeplay() {
+
+      var yrs = d3.keys(data);
+      var i = 0;
+      setInterval(function(){
+        if(i==yrs.length) i=0;
+        console.log(yrs[i])
+        i++;
+        },3000);
+
+    }
+
     function fillYears() {
 	d3.keys(data).forEach(function(e){
 		$("#years-cont").append('<a class="but y'+e+'" href="#" onclick="changeYear('+e+')">'+e+'</a>')
-
 	})
+  $("#years-cont").append('<a class="but play" href="#" onclick="timeplay"><span class="glyphicon glyphicon-play"></span></a>')    
+
 }
 
 initialize()
@@ -767,7 +799,7 @@ function createCharts() {
 
 
 
-charty=970
+charty=1000
 
 svg
 	.append("text")
@@ -946,7 +978,7 @@ d3.selectAll(".region").each(function(d){
 
 function createSections() {
 
-	secy = 750;
+	secy = 790;
 
 	svg.append("line")
 	.attr("x1",0)

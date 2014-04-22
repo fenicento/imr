@@ -124,3 +124,7 @@ h2, .title {
 #title{
 		position:relative;
 }
+.space-yield{
+	text-transform: uppercase;
+	font-weight:bold;
+}
