@@ -51,6 +51,7 @@ a {
 svg {
 	display: block;
 	margin: 0 auto;
+    clear:both;
 }
 .space-name {
 	font-weight: bold;

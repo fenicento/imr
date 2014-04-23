@@ -46,7 +46,8 @@ var ctop = $("#controls").offset().top;
 
 
 var width=1200;
-var height=1200;
+var height=1250;
+var playintvl;
 var svg = d3.select("#viz")
         .append("svg")
         .attr("width", width)
@@ -500,7 +501,7 @@ re
 .attr("text-anchor", "middle")
 .attr("y",function(d){return consy+60})
 .attr("font-size", "14px")
-.attr("fill", "gray");
+.attr("fill", suncolor);
 
 
 
@@ -737,7 +738,8 @@ function dirlink(ax,ay,bx,by,i) {
     	}
     }
 
-    function changeYear(i) {
+    function changeYear(i, clear) {
+        if(clear) clearInterval(playintvl);
     	if(i!=curyear) {
     		$(".active").removeClass("active");
     		$(".y"+i).addClass("active");
@@ -773,19 +775,22 @@ function dirlink(ax,ay,bx,by,i) {
 
       var yrs = d3.keys(data);
       var i = 0;
-      setInterval(function(){
-        if(i==yrs.length) i=0;
-        console.log(yrs[i])
+      changeYear(yrs[i]);
         i++;
-        },3000);
+
+      playintvl = setInterval(function(){
+        if(i==yrs.length) i=0;
+            changeYear(yrs[i],false);
+        i++;
+        },2000);
 
     }
 
     function fillYears() {
 	d3.keys(data).forEach(function(e){
-		$("#years-cont").append('<a class="but y'+e+'" href="#" onclick="changeYear('+e+')">'+e+'</a>')
+		$("#years-cont").append('<a class="but y'+e+'" href="#" onclick="changeYear('+e+',true)">'+e+'</a>')
 	})
-  $("#years-cont").append('<a class="but play" href="#" onclick="timeplay"><span class="glyphicon glyphicon-play"></span></a>')    
+  $("#years-cont").append('<a class="but play" href="#" onclick="timeplay()"><span class="glyphicon glyphicon-play"></span></a>')
 
 }
 
