@@ -837,15 +837,17 @@ svg
 var years=d3.map(data).keys()
 var lines={};
 var xlerp = d3.scale.linear().range([30, 210]);
-var plerp = d3.scale.linear().range([60,1]);
-var dlerp = d3.scale.linear().range([50,15]);
-var nlerp = d3.scale.linear().range([60,1]);
+var plerp = d3.scale.log().range([60,1]);
+var dlerp = d3.scale.log().range([60,1]);
+var nlerp = d3.scale.log().range([60,1]);
 var xAxis = d3.svg.axis();
 var formatxAxis = d3.format('.0f');
 xAxis
 .scale(xlerp)
 .ticks(5)
 .tickFormat(formatxAxis)
+
+
 
 years.forEach(function(year) {
 
@@ -863,6 +865,9 @@ years.forEach(function(year) {
 legend=svg.append("g")
 .attr("class","legend")
 .attr("transform","translate("+(width-150)+",5)")
+
+
+
 
 legend.append("line")
 .attr("x1",0)
@@ -931,7 +936,9 @@ svg.append("line")
 .style("stroke-width",0.5);
 
 
-d3.selectAll(".region").each(function(d){
+
+
+    d3.selectAll(".region").each(function(d){
 
 
 		chart=d3.select(this)
@@ -955,6 +962,19 @@ d3.selectAll(".region").each(function(d){
 		dlerp.domain([mindem,maxdem]);
 		nlerp.domain([minyeld,maxyeld]);
 		xlerp.domain([minyear,maxyear]);
+
+
+        for(i=10; i<110; i+=10) {
+
+           chart.append("line")
+            .attr("x1",xlerp("1750"))
+            .attr("y1",nlerp(i))
+            .attr("x2",xlerp("2050"))
+            .attr("y2",nlerp(i))
+            .style("stroke","gray")
+            .style("stroke-width",0.2);
+
+        }
 
 		chart.append("path")      // Add the valueline2 path.
         .attr("class", "valueline "+d.name)
