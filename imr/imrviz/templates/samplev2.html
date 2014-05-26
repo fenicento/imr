@@ -65,6 +65,24 @@ var chartstocklerp = d3.scale.linear().range([0,80]);
 var stocks;
 computeAllStocks();
 
+function abbreviateNumber(value) {
+    var newValue = value;
+    if (value >= 1000) {
+        var suffixes = ["", "k", "m", "b","t"];
+        var suffixNum = Math.floor( (""+value).length/3 );
+        var shortValue = '';
+        for (var precision = 2; precision >= 1; precision--) {
+            shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
+            var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
+            if (dotLessShortValue.length <= 2) { break; }
+        }
+        if (shortValue % 1 != 0)  shortNum = shortValue.toFixed(1);
+        newValue = shortValue+suffixes[suffixNum];
+    }
+    return newValue;
+}
+
+
 function findPopulationBounds(s) {
 
 	space = $.grep(nested_data,function(d){return d.key == s})[0];
@@ -102,7 +120,7 @@ $(".y"+curyear).addClass("active");
 
 var currData=JSON.parse(JSON.stringify(data[curyear]));
 
-var sunlerp = d3.scale.log().base(2).range([1, 30]);
+var sunlerp = d3.scale.linear().range([1, 30]);
 var surflerp = d3.scale.linear().range([0.01,6.28]);
 var stocklerp = d3.scale.linear().range([0.01,6.28]);
 var stockfilllerp = d3.scale.linear().range([20,5]);
@@ -194,15 +212,15 @@ function computeSpaces() {
 	surflerp.domain([1,totpop]);
 	stocklerp.domain([0,totstock]);
 	exlerp.domain([0,maxex]);
-	sunlerp.domain([1, d3.max(currData, function(d) { return d.offer; })]);
+	sunlerp.domain([1, d3.max(currData, function(d) { return d.demand; })]);
 
 	for(i =0; i<num; i++) {
 
 
 		currData[i].leTotOffer=sunlerp(currData[i].offer)
 		currData[i].leDemand=sunlerp(currData[i].demand)
-		currData[i].leYeld=sunlerp(currData[i].offer*currData[i].yeld)
-		currData[i].leOffer=sunlerp(currData[i].offer*(1-currData[i].yeld))
+		currData[i].leYeld=sunlerp(currData[i].offer)
+		currData[i].leOffer=sunlerp(currData[i].offer)
 	}
 }
 
@@ -257,7 +275,7 @@ re
 
 re.selectAll("path.yeld")
 .transition()
-.style("stroke-width", function(d){return d.leYeld/3})
+.style("stroke-width", function(d){return d.leYeld})
 .attr("d",function(d) {return createYeldLine(d)});
 
 re.selectAll("path.yeld")
@@ -480,7 +498,7 @@ re
 
 d3.selectAll("text.space-pop")
 .attr("x", function(d) { return d.x })
-.text( function (d) { return ((d.surface/totpop)*100).toFixed(2)+"% population"})
+.text( function (d) {return abbreviateNumber(d.population)+" population"})
 
 re
 .append("text")
@@ -492,7 +510,7 @@ re
 
 d3.selectAll("text.space-stock")
 .attr("x", function(d) { return d.x })
-.text( function (d) { return ((d.stock/totstock)*100).toFixed(2)+"% stock"})
+.text( function (d) { return abbreviateNumber(d.stock)+" stock"})
 
 
 re
@@ -507,7 +525,7 @@ re
 
 d3.selectAll("text.space-yield")
 .attr("x", function(d) { return d.x })
-.text( function (d) { return "Solar yield: "+d.yeld})
+.text( function (d) { return "Solar yield: "+d.yeld+"%"})
 
 re.exit().remove()
 
@@ -603,7 +621,7 @@ function createExchanges(d) {
 				.attr("class", "exchange "+d.name+" "+b.name)
 				.style("stroke", excolor)
 				.style("opacity","0.6")
-		        .style("stroke-width", exlerp(d.exchanges[e]-b.exchanges[d.name]))
+		        .style("stroke-width", sunlerp(d.exchanges[e]-b.exchanges[d.name]))
 		        .attr("fill","none")
 		        .attr("d",dirlink(d.x,d.y,b["x"],b["y"],Math.abs(d.num-i)))
 		        .attr("marker-end","url(#pointer2)");
@@ -614,7 +632,7 @@ function createExchanges(d) {
                       //The text within the tooltip
                       type:"tooltip",
                       gravity:"north",
-                      text: "<b>Net exchange "+d.name.replace(/_/g, ' ')+" - "+b.name.replace(/_/g, ' ')+"</b><br/>Value: "+exlerp(d.exchanges[e]-b.exchanges[d.name]),
+                      text: "<b>Net exchange "+d.name.replace(/_/g, ' ')+" - "+b.name.replace(/_/g, ' ')+"</b><br/>Value: "+sunlerp(d.exchanges[e]-b.exchanges[d.name]),
                       detection: "shape",
                       //Where
                       placement: "fixed",
@@ -629,7 +647,7 @@ function createExchanges(d) {
                 });
 
 
-                netExchanges.push({"source":d.name,"target":b.name,"value":exlerp(d.exchanges[e]-b.exchanges[d.name])});
+                netExchanges.push({"source":d.name,"target":b.name,"value":sunlerp(d.exchanges[e]-b.exchanges[d.name])});
 
 			}
 		}
@@ -1017,7 +1035,7 @@ function createSections() {
 
 		flux.selectAll("line.yield-sect")
 		.transition()
-		.style("stroke-width", function(d){return d.leYeld/3})
+		.style("stroke-width", function(d){return d.leYeld})
 		.attr("x1",  function(d){return d.x-defsiz/3.5})
 		.attr("y1",  function(d){return secy})
 		//.attr("x2",  function(d){return d.x+d.leOffer/2+d.leOffer*2.77})
@@ -1034,7 +1052,7 @@ function createSections() {
 		.style("stroke-width","3")
 		.style("fill",sunfill)
 		.style("stroke-dasharray","5 3")
-		.attr("r",10)
+		.attr("r",15)
 		.attr("cx",d.x-defsiz/3.5)
 		.attr("cy",secy)
 
@@ -1079,7 +1097,11 @@ function createSections() {
     .style("fill", "url(#gradient)");
 
 
-    stockUsage = d.leDemand-d.leYeld/3
+    stockUsage = d.leDemand-d.leYeld
+
+
+    if(d.stock>=1) {
+
 
     flux.append("path")
     .style("fill",  stockcolor)
@@ -1092,7 +1114,7 @@ function createSections() {
 		p3=(d.x+stockUsage/2)+","+(secy+82)
 
 		return "M"+p1+"L"+p2+"L"+p3+"Z"})
-
+    }
         flux
             .append("text")
             .attr("class","sect-name")
